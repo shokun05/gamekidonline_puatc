@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>วิทยาลัยเทคนิคปัว Kids Play — เว็บเกมเด็กอนุบาล</title>
+  <meta name="description" content="เว็บเล่นเกมสำหรับเด็กอนุบาล: ภาพใหญ่ กดง่าย สีสบายตา พร้อมบันทึกผลงานเป็น PDF/JPG" />
+
+  <!-- ไลบรารีสำหรับบันทึกผลงานเป็น PDF/JPG (ฝั่งผู้ใช้) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg: #f7fbff;
+      --card: #ffffff;
+      --ink: #1b1f23;
+      --soft-ink:#4b5563;
+      --brand:#4f46e5;
+      --brand-2:#22c55e;
+      --accent:#fde68a;
+      --selected:#4b5563;
+      --correct:#22c55e;
+      --wrong:#ef4444;
+      --shadow: 0 10px 20px rgba(0,0,0,.06), 0 2px 6px rgba(0,0,0,.05);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Thai", "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+      line-height:1.45; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    header{
+      position:sticky; top:0; z-index:20; backdrop-filter: blur(6px);
+      background:rgba(247,251,255,.85); border-bottom:1px solid #e5e7eb;
+    }
+    .container{max-width:1200px; margin:0 auto; padding:16px;}
+    .topbar{display:flex; align-items:center; gap:12px; justify-content:space-between}
+    .brand{display:flex; align-items:center; gap:10px}
+    .logo{width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,var(--brand),#7c3aed); box-shadow:var(--shadow);}
+    .brand h1{font-size:20px; margin:0}
+    .child-name{
+      display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid #e5e7eb; border-radius:14px; padding:8px 12px; box-shadow:var(--shadow);
+    }
+    .child-name input{border:0; outline:0; font-size:16px; width:180px}
+    .btn{
+      appearance:none; border:0; cursor:pointer; padding:12px 16px; border-radius:16px; font-weight:700; box-shadow:var(--shadow);
+      background:var(--brand); color:white; font-size:16px; transition:transform .05s ease;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{background:#0ea5e9}
+    .btn.ghost{background:var(--card); color:var(--ink); border:1px solid #e5e7eb}
+
+    /* หมวดรวมเกม */
+    .games-grid{
+      display:grid; gap:14px; grid-template-columns: repeat(2, minmax(140px,1fr));
+    }
+    @media (min-width:600px){ .games-grid{ grid-template-columns: repeat(3, minmax(160px,1fr)); } }
+    @media (min-width:900px){ .games-grid{ grid-template-columns: repeat(5, minmax(180px,1fr)); } }
+
+    .game-card{
+      display:block; background:var(--card); border-radius:22px; overflow:hidden; text-decoration:none; color:inherit; box-shadow:var(--shadow); border:1px solid #eef2f7;
+    }
+    .game-thumb{ aspect-ratio: 16/12; display:flex; align-items:center; justify-content:center; font-size:76px; }
+    .game-card img{width:100%; height:100%; object-fit:contain; padding:12px}
+    .game-meta{padding:12px 14px;}
+    .game-title{font-size:18px; font-weight:800; margin:0 0 6px}
+    .game-desc{margin:0; color:var(--soft-ink); font-size:14px}
+
+    /* หน้าจอเกม */
+    .screen{display:none}
+    .screen.active{display:block}
+    .game-wrap{background:var(--card); border-radius:26px; padding:16px; box-shadow:var(--shadow); border:1px solid #eef2f7}
+
+    .crumbs{display:flex; align-items:center; gap:10px; margin-bottom:10px}
+    .crumbs a{color:#2563eb; text-decoration:none; font-weight:700}
+
+    .progress{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; margin:10px 0 18px;
+    }
+    .bar{flex:1; height:14px; background:#e5e7eb; border-radius:999px; overflow:hidden}
+    .bar > span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--brand),#06b6d4);}
+
+    .question{font-size:26px; font-weight:900; margin:6px 0 14px}
+
+    .options{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+    .option{
+      position:relative; border:4px solid transparent; border-radius:24px; background:#f9fafb; cursor:pointer; overflow:hidden; user-select:none; outline:none;
+      box-shadow:var(--shadow);
+    }
+    .option:focus-visible{outline:4px solid #60a5fa}
+    .option.selected{border-color:var(--selected)}
+    .option img.opt-img{width:100%; height:100%; object-fit:contain; background:white; aspect-ratio:1/1}
+    .option footer{display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:white;}
+    .option .name{font-size:18px; font-weight:800}
+    .sound-btn{border:0; background:#10b981; color:white; font-weight:800; padding:10px 12px; border-radius:12px; cursor:pointer}
+
+    /* ติ๊กถูก/กากบาท หลังเฉลย */
+    .mark{
+      position:absolute; inset:auto 8px 8px auto; width:56px; height:56px; border-radius:50%; display:none; align-items:center; justify-content:center;
+      background:white; box-shadow:var(--shadow); border:4px solid var(--correct); color:var(--correct); font-size:30px; font-weight:900;
+    }
+    .option.correct .mark{ display:flex }
+    .option.wrong .mark{ display:flex; border-color:var(--wrong); color:var(--wrong) }
+
+    .actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
+
+    .result{
+      margin-top:18px; padding:16px; border-radius:22px; background:linear-gradient(180deg,#f0f9ff,#ccfbf1); border:1px solid #bae6fd; box-shadow:var(--shadow);
+    }
+
+    /* ใบประกาศ */
+    .certificate{
+      width: 100%; max-width: 900px; margin: 0 auto; background:white; border-radius:30px; box-shadow:var(--shadow);
+      padding:28px; border:6px solid var(--accent); text-align:center;
+    }
+    .certificate h3{font-size:28px; margin:0 0 12px}
+    .certificate .name{font-size:34px; font-weight:900}
+    .certificate .score{font-size:22px; margin-top:6px}
+    .cert-row{display:flex; justify-content:center; gap:18px; flex-wrap:wrap; margin-top:16px}
+
+    .muted{color:var(--soft-ink)}
+    .hidden{display:none !important}
+
+    /* เกมสี */
+    .color-box{width:100%; aspect-ratio:1/1;}
+    .option.color .name{font-size:20px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <img class="logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3wohI4eredJb2xRKso_61n5c00o733XwKMA&s" alt="โลโก้">
+        <h1>วิทยาลัยเทคนิคปัว Kids Game Play</h1>
+      </div>
+      <div class="child-name" aria-label="ตั้งชื่อนักเรียน">
+        <span>👶 ชื่อเด็ก:</span>
+        <input id="childName" type="text" inputmode="text" placeholder="พิมพ์ชื่อที่นี่" aria-label="ชื่อเด็ก" />
+        <button class="btn ghost" id="saveNameBtn" title="บันทึกชื่อ">บันทึก</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- หน้ารวมเกม -->
+    <section id="screen-home" class="screen active" aria-label="หน้าเลือกเกม">
+      <h2 style="margin:10px 0 14px">เลือกเกมที่อยากเล่น</h2>
+      <div class="games-grid" id="gamesGrid"></div>
+      <p class="muted" style="margin-top:10px">เลือกเล่นเกมได้เต็มที่เลยครับ!!!</p>
+    </section>
+
+    <!-- หน้าจอเกม: เลือกภาพที่ถูกต้อง -->
+    <section id="screen-find" class="screen" aria-label="เกมเลือกภาพที่ถูกต้อง">
+      <nav class="crumbs">
+        <a href="#" class="backHome">← กลับหน้าแรก</a>
+        <span class="muted">/ เลือกภาพที่ถูกต้อง</span>
+      </nav>
+
+      <div class="game-wrap">
+        <div class="progress">
+          <div><strong>ข้อที่ <span id="qIndex">1</span></strong> / 10</div>
+          <div class="bar" aria-label="ความคืบหน้า"><span id="qBar" style="width:0%"></span></div>
+        </div>
+
+        <div class="question" id="qText">…</div>
+
+        <div class="options"></div>
+
+        <div class="actions">
+          <button class="btn" id="submitBtn" disabled>ส่งคำตอบ</button>
+          <button class="btn ghost hidden" id="skipWaitBtn">ถัดไปทันที</button>
+        </div>
+
+        <div id="feedback" class="muted" style="margin-top:6px"></div>
+
+        <div id="finishBlock" class="result hidden">
+          <div class="certificate" id="certificate-find">
+            <h3>🎉 เก่งมากเลย!</h3>
+            <div class="name" id="certName">ชื่อเด็ก</div>
+            <div class="score" id="certScore">คะแนน: 0/10</div>
+            <div class="muted" id="certDate">วันที่</div>
+            <div class="cert-row" style="margin-top:16px">
+              <div style="font-size:56px">🏆</div>
+              <div style="font-size:56px">🎓</div>
+              <div style="font-size:56px">🌈</div>
+            </div>
+          </div>
+          <div class="cert-row">
+            <button class="btn secondary" id="dlPdf-find">ดาวน์โหลดเป็น PDF</button>
+            <button class="btn ghost" id="dlJpg-find">ดาวน์โหลดเป็น JPG</button>
+            <button class="btn" id="playAgain">เล่นอีกครั้ง</button>
+            <button class="btn ghost backHome">กลับหน้าแรก</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- หน้าจอเกม: เลือกสี -->
+    <section id="screen-color" class="screen" aria-label="เกมเลือกสีที่ถูกต้อง">
+      <nav class="crumbs">
+        <a href="#" class="backHome">← กลับหน้าแรก</a>
+        <span class="muted">/ เลือกสีที่ถูกต้อง</span>
+      </nav>
+
+      <div class="game-wrap">
+        <div class="progress">
+          <div><strong>ข้อที่ <span id="qIndex-color">1</span></strong> / 10</div>
+          <div class="bar" aria-label="ความคืบหน้า"><span id="qBar-color" style="width:0%"></span></div>
+        </div>
+
+        <div class="question" id="qText-color">…</div>
+
+        <div class="options" id="options-color"></div>
+
+        <div class="actions">
+          <button class="btn" id="submitBtn-color" disabled>ส่งคำตอบ</button>
+          <button class="btn ghost hidden" id="skipWaitBtn-color">ถัดไปทันที</button>
+        </div>
+
+        <div id="feedback-color" class="muted" style="margin-top:6px"></div>
+
+        <div id="finishBlock-color" class="result hidden">
+          <div class="certificate" id="certificate-color">
+            <h3>🎉 เก่งมากเลย!</h3>
+            <div class="name" id="certName-color">ชื่อเด็ก</div>
+            <div class="score" id="certScore-color">คะแนน: 0/10</div>
+            <div class="muted" id="certDate-color">วันที่</div>
+            <div class="cert-row" style="margin-top:16px">
+              <div style="font-size:56px">🏆</div>
+              <div style="font-size:56px">🎨</div>
+              <div style="font-size:56px">🌈</div>
+            </div>
+          </div>
+          <div class="cert-row">
+            <button class="btn secondary" id="dlPdf-color">ดาวน์โหลดเป็น PDF</button>
+            <button class="btn ghost" id="dlJpg-color">ดาวน์โหลดเป็น JPG</button>
+            <button class="btn" id="playAgain-color">เล่นอีกครั้ง</button>
+            <button class="btn ghost backHome">กลับหน้าแรก</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- หน้าจอเกม: เลือกคำตอบตามหมวด -->
+    <section id="screen-quiz" class="screen" aria-label="เกมเลือกคำตอบที่ถูกต้อง">
+      <nav class="crumbs">
+        <a href="#" class="backHome">← กลับหน้าแรก</a>
+        <span class="muted">/ เลือกคำตอบที่ถูกต้อง</span>
+      </nav>
+
+      <div class="game-wrap">
+        <div class="progress">
+          <div><strong>ข้อที่ <span id="qIndex-quiz">1</span></strong> / 10</div>
+          <div class="bar" aria-label="ความคืบหน้า"><span id="qBar-quiz" style="width:0%"></span></div>
+        </div>
+
+        <div class="question" id="qText-quiz">…</div>
+
+        <div class="options" id="options-quiz"></div>
+
+        <div class="actions">
+          <button class="btn" id="submitBtn-quiz" disabled>ส่งคำตอบ</button>
+          <button class="btn ghost hidden" id="skipWaitBtn-quiz">ถัดไปทันที</button>
+        </div>
+
+        <div id="feedback-quiz" class="muted" style="margin-top:6px"></div>
+
+        <div id="finishBlock-quiz" class="result hidden">
+          <div class="certificate" id="certificate-quiz">
+            <h3>🎉 เก่งมากเลย!</h3>
+            <div class="name" id="certName-quiz">ชื่อเด็ก</div>
+            <div class="score" id="certScore-quiz">คะแนน: 0/10</div>
+            <div class="muted" id="certDate-quiz">วันที่</div>
+            <div class="cert-row" style="margin-top:16px">
+              <div style="font-size:56px">🏆</div>
+              <div style="font-size:56px">❓</div>
+              <div style="font-size:56px">🌿</div>
+            </div>
+          </div>
+          <div class="cert-row">
+            <button class="btn secondary" id="dlPdf-quiz">ดาวน์โหลดเป็น PDF</button>
+            <button class="btn ghost" id="dlJpg-quiz">ดาวน์โหลดเป็น JPG</button>
+            <button class="btn" id="playAgain-quiz">เล่นอีกครั้ง</button>
+            <button class="btn ghost backHome">กลับหน้าแรก</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- หน้าจอเกม: ชีวิตประจำวัน -->
+    <section id="screen-life" class="screen" aria-label="เกมชีวิตประจำวัน">
+      <nav class="crumbs">
+        <a href="#" class="backHome">← กลับหน้าแรก</a>
+        <span class="muted">/ ชีวิตประจำวัน</span>
+      </nav>
+
+      <div class="game-wrap">
+        <div class="progress">
+          <div><strong>ข้อที่ <span id="qIndex-life">1</span></strong> / 10</div>
+          <div class="bar" aria-label="ความคืบหน้า"><span id="qBar-life" style="width:0%"></span></div>
+        </div>
+
+        <div class="question" id="qText-life">…</div>
+
+        <div class="options" id="options-life"></div>
+
+        <div class="actions">
+          <button class="btn" id="submitBtn-life" disabled>ส่งคำตอบ</button>
+          <button class="btn ghost hidden" id="skipWaitBtn-life">ถัดไปทันที</button>
+        </div>
+
+        <div id="feedback-life" class="muted" style="margin-top:6px"></div>
+
+        <div id="finishBlock-life" class="result hidden">
+          <div class="certificate" id="certificate-life">
+            <h3>🎉 เก่งมากเลย!</h3>
+            <div class="name" id="certName-life">ชื่อเด็ก</div>
+            <div class="score" id="certScore-life">คะแนน: 0/10</div>
+            <div class="muted" id="certDate-life">วันที่</div>
+            <div class="cert-row" style="margin-top:16px">
+              <div style="font-size:56px">🏆</div>
+              <div style="font-size:56px">🚗</div>
+              <div style="font-size:56px">🍎</div>
+            </div>
+          </div>
+          <div class="cert-row">
+            <button class="btn secondary" id="dlPdf-life">ดาวน์โหลดเป็น PDF</button>
+            <button class="btn ghost" id="dlJpg-life">ดาวน์โหลดเป็น JPG</button>
+            <button class="btn" id="playAgain-life">เล่นอีกครั้ง</button>
+            <button class="btn ghost backHome">กลับหน้าแรก</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ==========================
+    // 🔧 ตั้งค่าและโครงสร้างเกม (หน้าแรก)
+    // ==========================
+    const games = [
+      { id: 'find',  title: 'เลือกภาพที่ถูกต้อง', desc: 'ลองเล่นดูสิครับสนุกแน่นอน', icon: 'https://cdn.discordapp.com/attachments/1402316480573607999/1409176784498462831/image.png?ex=68ac6da6&is=68ab1c26&hm=557c64769da92d4f9dcd96f43e98dbc608f7d8822bb43157c759bc600d204c42' },
+      { id: 'color', title: 'เลือกสีที่ถูกต้อง',  desc: 'ลองเล่นดูสิครับสนุกแน่นอน', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f308.svg' },
+      { id: 'quiz',  title: 'เลือกคำตอบที่ถูกต้อง', desc: 'ลองเล่นดูสิครับสนุกแน่นอน', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2753.svg' },
+      { id: 'life',  title: 'ชีวิตประจำวัน', desc: 'ลองเล่นดูสิครับสนุกแน่นอน', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f3c3.svg' }
+    ];
+
+    const gamesGrid = document.getElementById('gamesGrid');
+    games.forEach(g => {
+      const a = document.createElement('a');
+      a.href = '#'; a.className = 'game-card'; a.dataset.game = g.id;
+      a.innerHTML = `
+        <div class="game-thumb"><img alt="${g.title}" src="${g.icon}"></div>
+        <div class="game-meta">
+          <div class="game-title">${g.title}</div>
+          <p class="game-desc">${g.desc}</p>
+        </div>
+      `;
+      a.addEventListener('click', (e)=>{ e.preventDefault(); openGame(g.id); });
+      gamesGrid.appendChild(a);
+    });
+
+    const backHomeLinks = document.querySelectorAll('.backHome');
+    backHomeLinks.forEach(el => el.addEventListener('click', (e)=>{ e.preventDefault(); showScreen('home'); }));
+
+    function showScreen(which){
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-'+which).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function openGame(id){
+      if(id==='find')  startFindGame();
+      if(id==='color') startColorGame();
+      if(id==='quiz')  startQuizGame();
+      if(id==='life')  startLifeGame();
+    }
+
+    // ==============================
+    // 🔊 เสียงพูด (สำรองเมื่อไม่มีไฟล์เสียงสัตว์)
+    // ==============================
+    function speakThai(text){
+      try{
+        const u = new SpeechSynthesisUtterance(text);
+        const voices = speechSynthesis.getVoices();
+        const th = voices.find(v => /th|Thai/i.test(v.lang));
+        if(th) u.voice = th; u.rate = 0.95; u.pitch = 1.0; u.volume = 1.0;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }catch(err){ console.warn('speech failed', err); }
+    }
+    window.speechSynthesis && (speechSynthesis.onvoiceschanged = ()=>{});
+
+    // 🎵 เครื่องเล่นเสียงสัตว์
+    const audioPlayer = new Audio();
+    audioPlayer.preload = 'auto';
+
+    // ✅ ยูทิลิตี้ Twemoji
+    const twemojiBase = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
+    const tw = hex => `${twemojiBase}${hex}.svg`;
+
+    // ✅ รายชื่อสัตว์ (ของเดิม + ใช้รูป URL จริง)
+    const ANIMALS = [
+      { key:'elephant', name:'ช้าง', imageUrl:'https://pngfile.net/files/preview/1280x957/21565851986bbscuwaiidwdnhq8y2ealfi4js8ykwz8zw5jt3o7fdaekwggribblx66oc0joidxdw3gtjo3l69apebps8ulquytobfk6qoslhwx.png' },
+      { key:'lion', name:'สิงโต', imageUrl:'https://img.freepik.com/free-photo/3d-animated-cartoon-lion_23-2150800715.jpg' },
+      { key:'tiger', name:'เสือ', imageUrl:'https://static.vecteezy.com/system/resources/thumbnails/049/159/624/small_2x/royal-bangle-tiger-3d-cartoon-image-png.png' },
+      { key:'horse', name:'ม้า', imageUrl:'https://png.pngtree.com/png-vector/20241024/ourmid/pngtree-horse-cartoon-png-image_14162403.png' },
+      { key:'cow', name:'วัว', imageUrl:'https://i.pinimg.com/736x/e9/4e/53/e94e536c7dbeebdd212ac77ffb8ee945.jpg' },
+      { key:'pig', name:'หมู', imageUrl:'https://easydrawingguides.com/wp-content/uploads/2017/04/how-to-draw-a-cartoon-pig-featured-image-1200.png' },
+      { key:'dog', name:'สุนัข', imageUrl:'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-cute-cartoon-happy-dog-png-file-png-image_10201723.png' },
+      { key:'cat', name:'แมว', imageUrl:'https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA4L3Jhd3BpeGVsb2ZmaWNlMTVfM2RfcmVuZGVyX2NoYXJhY3Rlcl9vZl9hX2JyaXRpc2hfc2hvcnRoYWlyX2tpdF9mNThkN2U2Ny05YTk1LTQ1MjEtOGYwMy1hODM3YmQ5MWY4ZmFfMS5wbmc.png' },
+      { key:'rabbit', name:'กระต่าย', imageUrl:'https://toppng.com/uploads/preview/bunny-cartoon-png-picture-freeuse-stock-rabbit-cartoo-11563091027wziigvslvq.png' },
+      { key:'bear', name:'หมี', imageUrl:'https://png.pngtree.com/png-vector/20240621/ourmid/pngtree-sweet-grizzly-bear-cartoon-art-for-kids-png-image_12812227.png' },
+      { key:'panda', name:'แพนด้า', imageUrl:'https://i.pinimg.com/564x/c7/30/54/c73054170fb13bbfc0db839ea8526bdf.jpg' },
+      { key:'koala', name:'โคอาลา', imageUrl:'https://img.freepik.com/free-vector/cute-koala-cartoon-character_1308-132636.jpg' },
+      { key:'fox', name:'สุนัขจิ้งจอก', imageUrl:'https://static.vecteezy.com/system/resources/thumbnails/048/332/545/small_2x/smiling-cartoon-fox-on-transparent-background-free-png.png' },
+      { key:'monkey', name:'ลิง', imageUrl:'https://gallery.yopriceville.com/downloadfullsize/send/9309' },
+      { key:'frog', name:'กบ', imageUrl:'https://i.pinimg.com/736x/a0/5c/88/a05c883721a2397785439e4799ba2962.jpg' },
+      { key:'chicken', name:'ไก่', imageUrl:'https://static.vecteezy.com/system/resources/thumbnails/044/315/179/small_2x/cartoon-of-a-chicken-hen-free-png.png' },
+      { key:'penguin', name:'เพนกวิน', imageUrl:'https://png.pngtree.com/png-vector/20240429/ourmid/pngtree-happy-penguin-cute-cartoon-art-png-image_12341225.png' },
+      { key:'bird', name:'นก', imageUrl:'https://t3.ftcdn.net/jpg/01/19/50/64/360_F_119506410_FPYY0xlKYmqV5B3nLr1o0XaVbi3weO5k.jpg' },
+      { key:'duck', name:'เป็ด', imageUrl:'https://toppng.com/uploads/preview/duck-11530970651bb8llewffq.png' },
+      { key:'eagle', name:'นกอินทรี', imageUrl:'https://gallery.yopriceville.com/var/albums/Free-Clipart-Pictures/Birds-PNG/Eagle_PNG_PNG_Clip_Art_Image.png?m=1629783192' },
+      { key:'owl', name:'นกฮูก', imageUrl:'https://img.freepik.com/free-vector/cute-owl-perched-branch_1308-165797.jpg?semt=ais_hybrid&w=740&q=80' },
+      { key:'boar', name:'หมูป่า', imageUrl:'https://img.freepik.com/free-vector/friendly-cartoon-warthog-illustration_1308-165814.jpg' },
+      { key:'rhinoceros', name:'แรด', imageUrl:'https://i.pinimg.com/736x/72/8d/a2/728da2bc476d67bf7f9ddace84f690ea.jpg' },
+      { key:'hippo', name:'ฮิปโปโปเตมัส', imageUrl:'https://img.freepik.com/free-vector/cheerful-cartoon-hippopotamus-illustration_1308-165828.jpg?semt=ais_hybrid&w=740&q=80' },
+      { key:'crocodile', name:'จระเข้', imageUrl:'https://i.pinimg.com/736x/08/41/90/0841904825819f295262cea0d191db4c.jpg' },
+      { key:'turtle', name:'เต่า', imageUrl:'https://t3.ftcdn.net/jpg/02/12/04/16/360_F_212041631_IlUpamHEbdvRMmzfuXav1XORBnaIXuEf.jpg' },
+      { key:'lizard', name:'กิ้งก่า', imageUrl:'https://png.pngtree.com/png-vector/20221223/ourmid/pngtree-little-lizard-animal-ip-element-image-vector-illustration-png-image_6493752.png' },
+      { key:'snake', name:'งู', imageUrl:'https://png.pngtree.com/png-vector/20240216/ourmid/pngtree-snake-illustration-png-image_11743292.png' },
+      { key:'whale', name:'วาฬ', imageUrl:'https://t4.ftcdn.net/jpg/11/41/83/01/360_F_1141830138_wkG4bn4KRbI0tGFKLqLS1EGkmoR2Cvb5.jpg' },
+      { key:'dolphin', name:'ปลาโลมา', imageUrl:'https://parspng.com/wp-content/uploads/2024/03/dolphinpng.parspng.com-4.png' },
+      { key:'fish', name:'ปลา', imageUrl:'https://png.pngtree.com/png-vector/20230814/ourmid/pngtree-blue-cartoon-fish-sticker-on-a-white-background-vector-png-image_6892122.png' },
+      { key:'shark', name:'ฉลาม', imageUrl:'https://www.citypng.com/public/uploads/preview/hd-cartoon-smiling-shark-character-png-7017516948622525qd7lu90pw.png' },
+      { key:'octopus', name:'ปลาหมึก', imageUrl:'https://static.vecteezy.com/system/resources/previews/038/265/329/non_2x/ai-generated-octopus-in-cartoon-style-on-transparent-background-free-png.png' },
+      { key:'butterfly', name:'ผีเสื้อ', imageUrl:'https://e7.pngegg.com/pngimages/389/48/png-clipart-pink-and-green-butterfly-butterfly-cartoon-cute-cartoon-butterfly-cartoon-character-child.png' },
+      { key:'ladybeetle', name:'เต่าทอง', imageUrl:'https://static.vecteezy.com/system/resources/thumbnails/039/657/514/small_2x/ai-generated-cartoon-of-ladybug-transparent-background-free-png.png' },
+      { key:'ant', name:'มด', imageUrl:'https://parspng.com/wp-content/uploads/2024/05/antpng.parspng.com-2.png' },
+      { key:'bee', name:'ผึ้ง', imageUrl:'https://img.pikbest.com/png-images/20240804/honey-bee-cartoon-character-illustration-png_10698271.png!sw800' },
+      { key:'deer', name:'กวาง', imageUrl:'https://png.pngtree.com/png-vector/20220807/ourmid/pngtree-cartoon-deer-in-the-grass-png-image_5769272.png'},
+    ];
+
+    // แผนที่ไฟล์เสียงสัตว์
+    const SOUND_URLS = {
+      elephant:'sound/elephant.mp3', lion:'sound/lion.mp3', tiger:'sound/tiger.mp3',
+      horse:'sound/horse.mp3', cow:'sound/cow.mp3', pig:'sound/pig.mp3',
+      dog:'sound/dog.mp3', cat:'sound/cat.mp3', rabbit:'sound/rabbit.mp3',
+      bear:'sound/bear.mp3', panda:'sound/panda.mp3', koala:'sound/koala.mp3',
+      fox:'sound/fox.mp3', monkey:'sound/monkey.mp3', frog:'sound/frog.mp3',
+      chicken:'sound/chicken.mp3', penguin:'sound/penguin.mp3', bird:'sound/bird.mp3',
+      duck:'sound/duck.mp3', eagle:'sound/eagle.mp3', owl:'sound/owl.mp3',
+      boar:'sound/boar.mp3', rhinoceros:'sound/rhinoceros.mp3', hippo:'sound/hippo.mp3',
+      crocodile:'sound/crocodile.mp3', turtle:'sound/turtle.mp3', lizard:'sound/lizard.mp3',
+      snake:'sound/snake.mp3', whale:'sound/whale.mp3', dolphin:'sound/dolphin.mp3',
+      fish:'sound/fish.mp3', shark:'sound/shark.mp3', octopus:'sound/octopus.mp3',
+      butterfly:'sound/butterfly.mp3', ladybeetle:'sound/ladybeetle.mp3', ant:'sound/ant.mp3', bee:'sound/bee.mp3'
+    };
+
+    function playAnimalSound(keyOrName){
+      let key = keyOrName;
+      if(!SOUND_URLS[keyOrName]){
+        const found = ANIMALS.find(a=>a.name===keyOrName || a.key===keyOrName);
+        key = found ? found.key : keyOrName;
+      }
+      const url = SOUND_URLS[key];
+      if(url){
+        try{
+          audioPlayer.pause(); audioPlayer.currentTime = 0;
+          audioPlayer.src = url;
+          audioPlayer.onerror = ()=> speakThai(ANIMALS.find(a=>a.key===key)?.name || key);
+          audioPlayer.play().catch(()=> speakThai(ANIMALS.find(a=>a.key===key)?.name || key));
+        }catch(e){ speakThai(ANIMALS.find(a=>a.key===key)?.name || key); }
+      }else{
+        speakThai(ANIMALS.find(a=>a.key===key)?.name || key);
+      }
+    }
+
+    function showScreen(which){ document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-'+which).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+
+    // ==============================
+    // 🐘 เกม: เลือกภาพที่ถูกต้อง (ของเดิม)
+    // ==============================
+    const scrFind = document.getElementById('screen-find');
+    const qText = document.getElementById('qText');
+    const qIndexEl = document.getElementById('qIndex');
+    const qBar = document.getElementById('qBar');
+    const optionsEl = scrFind.querySelector('.options');
+    const submitBtn = document.getElementById('submitBtn');
+    const skipWaitBtn = document.getElementById('skipWaitBtn');
+    const feedback = document.getElementById('feedback');
+    const finishBlock = document.getElementById('finishBlock');
+    const certName = document.getElementById('certName');
+    const certScore = document.getElementById('certScore');
+    const certDate = document.getElementById('certDate');
+    const playAgain = document.getElementById('playAgain');
+
+    let bank = [];      // คลังข้อ (30 ข้อ)
+    let quiz = [];      // เลือกมา 10 ข้อ
+    let qIdx = 0;       // 0..9
+    let score = 0;      // คะแนน
+    let selected = null;
+    let nextTimer = null;
+
+    function buildBank(){
+      bank = ANIMALS.slice(0, 30).map((ani, i) => {
+        let other;
+        do{ other = ANIMALS[Math.floor(Math.random()*ANIMALS.length)]; } while(other.key === ani.key);
+        const correctIndex = Math.random() < 0.5 ? 0 : 1;
+        const left = correctIndex===0 ? ani : other;
+        const right = correctIndex===1 ? ani : other;
+        return {
+          id: i+1,
+          ask: `${ani.name}คือตัวไหน?`,
+          correctIndex,
+          options: [
+            { name: left.name,  key: left.key,  img: left.imageUrl,  alt: `รูป${left.name}` },
+            { name: right.name, key: right.key, img: right.imageUrl, alt: `รูป${right.name}` }
+          ],
+          correctName: ani.name
+        };
+      });
+    }
+    function pick10(){
+      const arr = bank.slice();
+      for(let i=arr.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+      quiz = arr.slice(0,10);
+    }
+    function startFindGame(){
+      showScreen('find');
+      buildBank(); pick10();
+      qIdx = 0; score = 0; selected = null; feedback.textContent = '';
+      finishBlock.classList.add('hidden');
+      renderQuestion();
+    }
+    function renderQuestion(){
+      const q = quiz[qIdx];
+      qText.textContent = q.ask;
+      qIndexEl.textContent = (qIdx+1);
+      qBar.style.width = `${(qIdx)/10*100}%`;
+      optionsEl.innerHTML = '';
+      selected = null; submitBtn.disabled = true; skipWaitBtn.classList.add('hidden');
+
+      q.options.forEach((opt, idx) => {
+        const card = document.createElement('button');
+        card.className = 'option'; card.type = 'button'; card.setAttribute('aria-pressed','false');
+        card.innerHTML = `
+          <img class="opt-img" data-key="${opt.key}" src="${opt.img}" alt="${opt.alt}">
+          <footer>
+            <span class="name">${opt.name}</span>
+            <button class="sound-btn" type="button" aria-label="ฟังเสียงของ ${opt.name}">🔊 ฟังเสียง</button>
+          </footer>
+          <div class="mark">✔</div>
+        `;
+        card.addEventListener('click', (e)=>{
+          if(e.target && e.target.classList.contains('sound-btn')) return;
+          [...optionsEl.children].forEach(c=>c.classList.remove('selected'));
+          card.classList.add('selected');
+          selected = idx; submitBtn.disabled = false; feedback.textContent='';
+        });
+        const imgEl = card.querySelector('.opt-img');
+        imgEl.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          [...optionsEl.children].forEach(c=>c.classList.remove('selected'));
+          card.classList.add('selected');
+          selected = idx; submitBtn.disabled = false; feedback.textContent='';
+          playAnimalSound(opt.key);
+        });
+        card.querySelector('.sound-btn').addEventListener('click', (e)=>{
+          e.stopPropagation();
+          playAnimalSound(opt.key);
+        });
+        optionsEl.appendChild(card);
+      });
+    }
+    function revealAnswer(){
+      const q = quiz[qIdx];
+      const cards = [...optionsEl.children];
+      cards.forEach((card, idx)=>{
+        const mark = card.querySelector('.mark');
+        if(idx===q.correctIndex){ card.classList.add('correct'); mark.title = 'ถูกต้อง'; }
+        else if (selected===idx){ card.classList.add('wrong'); mark.textContent = '✖'; mark.title = 'ผิด'; }
+      });
+    }
+    function submit(){
+      if(selected===null) return;
+      const q = quiz[qIdx];
+      const correct = selected === q.correctIndex;
+      if(correct) score++;
+      revealAnswer();
+      feedback.innerHTML = correct ? '✅ เก่งมาก! คำตอบถูกต้อง' : `❌ ยังไม่ถูกนะ ตัวที่ถูกคือ “${q.correctName}”`;
+      submitBtn.disabled = true;
+      skipWaitBtn.classList.remove('hidden');
+      nextTimer = setTimeout(nextQuestion, 5000);
+    }
+    function nextQuestion(){
+      clearTimeout(nextTimer); skipWaitBtn.classList.add('hidden');
+      qIdx++;
+      if(qIdx < 10){ renderQuestion(); } else { finish(); }
+    }
+    function finish(){
+      qBar.style.width = '100%';
+      const name = (localStorage.getItem('childName')||'น้องเก่ง');
+      certName.textContent = name;
+      certScore.textContent = `คะแนน: ${score}/10`;
+      certDate.textContent = new Date().toLocaleString('th-TH', { dateStyle:'long', timeStyle:'short' });
+      finishBlock.classList.remove('hidden');
+      document.getElementById('dlPdf-find').focus();
+    }
+    submitBtn.addEventListener('click', submit);
+    skipWaitBtn.addEventListener('click', nextQuestion);
+    playAgain.addEventListener('click', startFindGame);
+
+    // ========== ดาวน์โหลดใบประกาศ (เกม 1) ==========
+    async function captureCertificate(elId){
+      const target = document.getElementById(elId);
+      const canvas = await html2canvas(target, { scale: 2, backgroundColor:'#ffffff' });
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+      return { canvas, dataUrl };
+    }
+    document.getElementById('dlJpg-find').addEventListener('click', async ()=>{
+      const { dataUrl } = await captureCertificate('certificate-find');
+      const a = document.createElement('a'); const name = (localStorage.getItem('childName')||'เด็กดี');
+      a.href = dataUrl; a.download = `ผลงาน_${name}.jpg`; document.body.appendChild(a); a.click(); a.remove();
+    });
+    document.getElementById('dlPdf-find').addEventListener('click', async ()=>{
+      const { jsPDF } = window.jspdf;
+      const { canvas } = await captureCertificate('certificate-find');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf = new jsPDF({ orientation:'landscape', unit:'pt', format:'a4' });
+      const pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(pageW/canvas.width, pageH/canvas.height);
+      const w = canvas.width*ratio, h = canvas.height*ratio, x=(pageW-w)/2, y=(pageH-h)/2;
+      pdf.addImage(imgData, 'JPEG', x, y, w, h);
+      const name = (localStorage.getItem('childName')||'เด็กดี');
+      pdf.save(`ผลงาน_${name}.pdf`);
+    });
+
+    // ==============================
+    // 🎨 เกม: เลือกสีที่ถูกต้อง
+    // ==============================
+    const COLORS = [
+      {name:'สีแดง',hex:'#ef4444'},
+      {name:'สีเขียว',hex:'#22c55e'},
+      {name:'สีน้ำเงิน',hex:'#3b82f6'},
+      {name:'สีเหลือง',hex:'#eab308'},
+      {name:'สีม่วง',hex:'#a855f7'},
+      {name:'สีส้ม',hex:'#f97316'},
+      {name:'สีชมพู',hex:'#ec4899'},
+      {name:'สีฟ้า',hex:'#38bdf8'},
+    ];
+    function startColorGame(){
+      showScreen('color');
+      const state = { idx:0, score:0, selected:null, quiz:[] , timer:null };
+      for(let i=0;i<10;i++){
+        const ans=COLORS[Math.floor(Math.random()*COLORS.length)];
+        let wrong; do{wrong=COLORS[Math.floor(Math.random()*COLORS.length)]}while(wrong===ans);
+        const correctIndex=Math.random()<0.5?0:1;
+        const opts=correctIndex? [wrong,ans]:[ans,wrong];
+        state.quiz.push({ ask:`${ans.name}คือสีไหน?`, correctIndex, options:opts, correctName:ans.name });
+      }
+      renderColor(state);
+    }
+    function renderColor(st){
+      const q = st.quiz[st.idx];
+      document.getElementById('qText-color').textContent = q.ask;
+      document.getElementById('qIndex-color').textContent = st.idx+1;
+      document.getElementById('qBar-color').style.width = `${(st.idx)/10*100}%`;
+      const box = document.getElementById('options-color');
+      box.innerHTML='';
+      st.selected=null;
+      const submit = document.getElementById('submitBtn-color');
+      const skip = document.getElementById('skipWaitBtn-color');
+      const fb = document.getElementById('feedback-color');
+      submit.disabled=true; skip.classList.add('hidden'); fb.textContent='';
+
+      q.options.forEach((opt, idx)=>{
+        const card=document.createElement('button');
+        card.className='option color'; card.type='button';
+        card.innerHTML=`
+          <div class="color-box" style="background:${opt.hex}"></div>
+          <footer><span class="name">${opt.name}</span></footer>
+          <div class="mark">✔</div>
+        `;
+        card.addEventListener('click', ()=>{
+          [...box.children].forEach(c=>c.classList.remove('selected'));
+          card.classList.add('selected'); st.selected=idx; submit.disabled=false; fb.textContent='';
+          speakThai(opt.name);
+        });
+        box.appendChild(card);
+      });
+
+      submit.onclick=()=>{
+        if(st.selected==null) return;
+        const correct = st.selected===q.correctIndex;
+        if(correct) st.score++;
+        [...box.children].forEach((c,i)=>{
+          const mark=c.querySelector('.mark');
+          if(i===q.correctIndex){ c.classList.add('correct'); mark.title='ถูกต้อง'; }
+          else if(i===st.selected){ c.classList.add('wrong'); mark.textContent='✖'; mark.title='ผิด'; }
+        });
+        fb.textContent = correct ? '✅ เก่งมาก! คำตอบถูกต้อง' : `❌ ยังไม่ถูกนะ คำตอบคือ “${q.correctName}”`;
+        submit.disabled=true; skip.classList.remove('hidden');
+        st.timer = setTimeout(()=>nextColor(st), 5000);
+      };
+      skip.onclick=()=>{ clearTimeout(st.timer); nextColor(st); };
+      document.getElementById('playAgain-color').onclick=()=> startColorGame();
+    }
+    function nextColor(st){
+      st.idx++;
+      if(st.idx<10) renderColor(st);
+      else finishColor(st);
+    }
+    function finishColor(st){
+      document.getElementById('qBar-color').style.width='100%';
+      const name = (localStorage.getItem('childName')||'น้องเก่ง');
+      document.getElementById('certName-color').textContent=name;
+      document.getElementById('certScore-color').textContent=`คะแนน: ${st.score}/10`;
+      document.getElementById('certDate-color').textContent=new Date().toLocaleString('th-TH',{dateStyle:'long', timeStyle:'short'});
+      document.getElementById('finishBlock-color').classList.remove('hidden');
+      document.getElementById('dlPdf-color').focus();
+    }
+    document.getElementById('dlJpg-color').addEventListener('click', async ()=>{
+      const { dataUrl } = await captureCertificate('certificate-color');
+      const a = document.createElement('a'); const name = (localStorage.getItem('childName')||'เด็กดี');
+      a.href = dataUrl; a.download = `ผลงาน_${name}.jpg`; document.body.appendChild(a); a.click(); a.remove();
+    });
+    document.getElementById('dlPdf-color').addEventListener('click', async ()=>{
+      const { jsPDF } = window.jspdf;
+      const { canvas } = await captureCertificate('certificate-color');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf = new jsPDF({ orientation:'landscape', unit:'pt', format:'a4' });
+      const pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(pageW/canvas.width, pageH/canvas.height);
+      const w = canvas.width*ratio, h = canvas.height*ratio, x=(pageW-w)/2, y=(pageH-h)/2;
+      pdf.addImage(imgData, 'JPEG', x, y, w, h);
+      const name = (localStorage.getItem('childName')||'เด็กดี'); pdf.save(`ผลงาน_${name}.pdf`);
+    });
+
+    // ==============================
+    // ❓ เกม: เลือกคำตอบที่ถูกต้อง (ตามหมวด)
+    // ==============================
+    const SETS = {
+      water:      ['ปลา','ปลาโลมา','วาฬ','ฉลาม','ปลาหมึก','เต่า','จระเข้','เพนกวิน'],
+      plantEater: ['ช้าง','วัว','ม้า','กระต่าย','แพนด้า','โคอาลา','กวาง','ลิง'],
+      meatEater:  ['สิงโต','เสือ','งู','จระเข้','หมี','แรด','ฉลาม','นกอินทรี','นกฮูก','สุนัขจิ้งจอก'],
+      air:        ['นก','นกฮูก','นกอินทรี','ผีเสื้อ','ผึ้ง',],
+      land:       ['สุนัข','แมว','ลิง','กิ้งก่า','หมูป่า','แพนด้า','โคอาลา','สุนัขจิ้งจอก','แรด','หมี'],
+      scary:      ['สิงโต','เสือ','งู','จระเข้','หมี','แรด','ฉลาม','ผึ้ง'],
+      domestic:   ['แมว','สุนัข'],
+      forest:     ['หมี','เสือ','ลิง','ช้าง','กวาง','หมูป่า','สุนัขจิ้งจอก','นกฮูก','แพนด้า','โคอาลา']
+    };
+    const nameToAnimal = Object.fromEntries(ANIMALS.map(a=>[a.name,a]));
+    const randItem = arr => arr[Math.floor(Math.random()*arr.length)];
+
+    function buildQuizBank(){
+      const items = [];
+      SETS.water.forEach(n=>{
+        const wrongSource = Math.random()<0.5 ? SETS.land : SETS.air;
+        let wrong; do{ wrong=randItem(wrongSource); }while(SETS.water.includes(wrong));
+        items.push({ ask:'อะไรเอ่ยอยู่ในน้ำ', correct:n, wrong });
+      });
+      SETS.plantEater.forEach(n=>{
+        let wrong; do{ wrong=randItem(SETS.meatEater); }while(wrong===n);
+        items.push({ ask:'อะไรเอ่ยกินพืช', correct:n, wrong });
+      });
+      SETS.meatEater.forEach(n=>{
+        let wrong; do{ wrong=randItem(SETS.plantEater); }while(wrong===n);
+        items.push({ ask:'อะไรเอ่ยกินเนื้อ', correct:n, wrong });
+      });
+      SETS.air.forEach(n=>{
+        const wrongSource = Math.random()<0.5 ? SETS.land : SETS.water;
+        let wrong; do{ wrong=randItem(wrongSource); }while(SETS.air.includes(wrong));
+        items.push({ ask:'อะไรเอ่ยอยู่บนท้องฟ้า', correct:n, wrong });
+      });
+      SETS.scary.forEach(n=>{
+        const all = Array.from(new Set(Object.values(SETS).flat()));
+        const nonScary = all.filter(x=>!SETS.scary.includes(x));
+        let wrong = randItem(nonScary);
+        items.push({ ask:'อะไรเอ่ยเป็นสัตว์น่ากลัว', correct:n, wrong });
+      });
+      SETS.domestic.forEach(n=>{
+        let wrong; do{ wrong=randItem(SETS.forest); }while(SETS.domestic.includes(wrong));
+        items.push({ ask:'อะไรเอ่ยเลี้ยงอยู่ในบ้านได้', correct:n, wrong });
+      });
+      SETS.forest.forEach(n=>{
+        const candidates = Array.from(new Set([...SETS.water, ...SETS.air, ...SETS.domestic]));
+        let wrong; do{ wrong=randItem(candidates); }while(SETS.forest.includes(wrong));
+        items.push({ ask:'อะไรเอ่ยอยู่ในป่า', correct:n, wrong });
+      });
+
+      // แปลงเป็นคำถามที่มีรูป (จาก ANIMALS)
+      const out = items.map(it=>{
+        const correctIndex = Math.random()<0.5?0:1;
+        const leftName = correctIndex===0 ? it.correct : it.wrong;
+        const rightName= correctIndex===1 ? it.correct : it.wrong;
+        const leftObj  = nameToAnimal[leftName]  ? {
+          name:leftName, key:nameToAnimal[leftName].key,
+          img:nameToAnimal[leftName].imageUrl, alt:`รูป${leftName}`
+        } : { name:leftName, textOnly:true };
+        const rightObj = nameToAnimal[rightName] ? {
+          name:rightName, key:nameToAnimal[rightName].key,
+          img:nameToAnimal[rightName].imageUrl, alt:`รูป${rightName}`
+        } : { name:rightName, textOnly:true };
+        return { ask: it.ask, correctIndex, options:[leftObj,rightObj], correctName: it.correct };
+      });
+      return out.sort(()=>Math.random()-0.5).slice(0,10);
+    }
+
+    function startQuizGame(){
+      showScreen('quiz');
+      document.getElementById('finishBlock-quiz').classList.add('hidden');
+      document.getElementById('feedback-quiz').textContent = '';
+      document.getElementById('qBar-quiz').style.width = '0%';
+      const state = { idx:0, score:0, selected:null, quiz:buildQuizBank(), timer:null };
+      renderQuiz(state);
+    }
+
+    function renderQuiz(st){
+      const q = st.quiz[st.idx];
+      const qText = document.getElementById('qText-quiz');
+      const qIndex = document.getElementById('qIndex-quiz');
+      const qBar = document.getElementById('qBar-quiz');
+      const options = document.getElementById('options-quiz');
+      const submit = document.getElementById('submitBtn-quiz');
+      const skip = document.getElementById('skipWaitBtn-quiz');
+      const fb = document.getElementById('feedback-quiz');
+
+      qText.textContent = q.ask;
+      qIndex.textContent = st.idx+1;
+      qBar.style.width = `${(st.idx)/10*100}%`;
+      options.innerHTML=''; st.selected=null; submit.disabled=true; skip.classList.add('hidden'); fb.textContent='';
+
+      q.options.forEach((opt, idx)=>{
+        const card=document.createElement('button');
+        card.className='option';
+        card.type='button';
+        card.setAttribute('aria-pressed','false');
+
+        card.innerHTML = opt.textOnly
+          ? `<div style="display:flex;align-items:center;justify-content:center;min-height:220px;font-size:64px">🅰️</div>
+             <footer>
+               <span class="name">${opt.name}</span>
+               <span class="sound-btn" role="button" tabindex="0" aria-label="ฟังคำว่า ${opt.name}">🔊 ฟังเสียง</span>
+             </footer>
+             <div class="mark">✔</div>`
+          : `<img class="opt-img" data-key="${opt.key}" src="${opt.img}" alt="${opt.alt}">
+             <footer>
+               <span class="name">${opt.name}</span>
+               <span class="sound-btn" role="button" tabindex="0" aria-label="ฟังเสียงของ ${opt.name}">🔊 ฟังเสียง</span>
+             </footer>
+             <div class="mark">✔</div>`;
+
+        card.addEventListener('click',(e)=>{
+          if(e.target && e.target.classList.contains('sound-btn')) return;
+          [...options.children].forEach(c=>c.classList.remove('selected'));
+          card.classList.add('selected');
+          st.selected=idx;
+          submit.disabled=false;
+          fb.textContent='';
+        });
+
+        const soundEl = card.querySelector('.sound-btn');
+        if(soundEl){
+          const playSound = ()=>{ opt.textOnly ? speakThai(opt.name) : playAnimalSound(opt.key); };
+          soundEl.addEventListener('click',(e)=>{ e.stopPropagation(); playSound(); });
+          soundEl.addEventListener('keydown',(e)=>{
+            if(e.key==='Enter' || e.key===' '){ e.preventDefault(); e.stopPropagation(); playSound(); }
+          });
+        }
+
+        if(!opt.textOnly){
+          const img = card.querySelector('.opt-img');
+          img.addEventListener('click',(e)=>{
+            e.stopPropagation();
+            [...options.children].forEach(c=>c.classList.remove('selected'));
+            card.classList.add('selected');
+            st.selected=idx;
+            submit.disabled=false;
+            fb.textContent='';
+            playAnimalSound(opt.key);
+          });
+        }else{
+          card.addEventListener('dblclick', ()=> speakThai(opt.name));
+        }
+
+        options.appendChild(card);
+      });
+
+      submit.onclick=()=>{
+        if(st.selected==null) return;
+        const correct = st.selected===q.correctIndex;
+        if(correct) st.score++;
+
+        [...options.children].forEach((c,i)=>{
+          const mark=c.querySelector('.mark');
+          if(i===q.correctIndex){ c.classList.add('correct'); mark.title='ถูกต้อง'; }
+          else if(i===st.selected){ c.classList.add('wrong'); mark.textContent='✖'; mark.title='ผิด'; }
+        });
+
+        fb.textContent = correct ? '✅ เก่งมาก! คำตอบถูกต้อง' : `❌ ยังไม่ถูกนะ คำตอบคือ “${q.correctName}”`;
+        submit.disabled=true;
+        skip.classList.remove('hidden');
+
+        clearTimeout(st.timer);
+        st.timer = setTimeout(()=>nextQuiz(st), 5000);
+      };
+
+      skip.onclick=()=>{ clearTimeout(st.timer); nextQuiz(st); };
+      document.getElementById('playAgain-quiz').onclick=()=> startQuizGame();
+    }
+
+    function nextQuiz(st){
+      st.idx++;
+      if(st.idx < 10){
+        renderQuiz(st);
+      }else{
+        finishQuiz(st);
+      }
+    }
+
+    function finishQuiz(st){
+      document.getElementById('qBar-quiz').style.width='100%';
+      const name=(localStorage.getItem('childName')||'น้องเก่ง');
+      document.getElementById('certName-quiz').textContent=name;
+      document.getElementById('certScore-quiz').textContent=`คะแนน: ${st.score}/10`;
+      document.getElementById('certDate-quiz').textContent=new Date().toLocaleString('th-TH',{dateStyle:'long', timeStyle:'short'});
+      document.getElementById('finishBlock-quiz').classList.remove('hidden');
+      document.getElementById('dlPdf-quiz').focus();
+    }
+
+    document.getElementById('dlJpg-quiz').addEventListener('click', async ()=>{
+      const { dataUrl } = await captureCertificate('certificate-quiz');
+      const a = document.createElement('a'); const name = (localStorage.getItem('childName')||'เด็กดี');
+      a.href = dataUrl; a.download = `ผลงาน_${name}.jpg`; document.body.appendChild(a); a.click(); a.remove();
+    });
+    document.getElementById('dlPdf-quiz').addEventListener('click', async ()=>{
+      const { jsPDF } = window.jspdf;
+      const { canvas } = await captureCertificate('certificate-quiz');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf = new jsPDF({ orientation:'landscape', unit:'pt', format:'a4' });
+      const pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(pageW/canvas.width, pageH/canvas.height);
+      const w = canvas.width*ratio, h = canvas.height*ratio, x=(pageW-w)/2, y=(pageH-h)/2;
+      pdf.addImage(imgData, 'JPEG', x, y, w, h);
+      const name = (localStorage.getItem('childName')||'เด็กดี'); pdf.save(`ผลงาน_${name}.pdf`);
+    });
+
+    // ==============================
+    // 🚗 เกม: ชีวิตประจำวัน (ใส่รูปแล้ว)
+    // ==============================
+
+    // 1) ธนาคารคำถาม
+    const LIFE_BANK = [
+      // ถนน/ดิน
+      {ask:'อะไรเอ่ยขับขี่บนท้องถนน', correct:'รถ', wrong:'เรือ'},
+      {ask:'อะไรเอ่ยมีสองล้อวิ่งบนถนน', correct:'จักรยานยนต์', wrong:'ดินสอ'},
+      {ask:'อะไรเอ่ยวิ่งบนรางในเมือง', correct:'รถไฟ', wrong:'เครื่องบิน'},
+      {ask:'อะไรเอ่ยส่งของบนถนน', correct:'รถบรรทุก', wrong:'ข้าว'},
+      {ask:'อะไรเอ่ยมีขนาดใหญ่กว่ารถจักรยานยนต์วิ่งบนท้องถนน', correct:'รถยนต์', wrong:'เรือ'},
+      // อากาศ
+      {ask:'อะไรเอ่ยบินอยู่บนท้องฟ้า', correct:'เครื่องบิน', wrong:'กล้วย'},
+      {ask:'อะไรเอ่ยบินได้เหมือนนก', correct:'เฮลิคอปเตอร์', wrong:'นม'},
+      {ask:'อะไรเอ่ยลอยได้บนท้องฟ้า', correct:'ลูกโป่ง', wrong:'ผักกาด'},
+      {ask:'อะไรเอ่ยช่วยพยุงลอยฟ้า', correct:'ร่มชูชีพ', wrong:'ห่วงยาง'},
+      {ask:'อะไรเอ่ยร่มสีสวยลอยฟ้า', correct:'ร่มร่อน', wrong:'สารพิษ'},
+      // น้ำ
+      {ask:'อะไรเอ่ยแล่นในน้ำ', correct:'เรือ', wrong:'น้ำแข็งใส'},
+      {ask:'อะไรเอ่ยแล่นในแม่น้ำ', correct:'เรือยนต์', wrong:'ขนมปัง'},
+      {ask:'อะไรเอ่ยอยู่ในทะเล', correct:'ปลา', wrong:'ช็อคโกแลต'},
+      {ask:'อะไรเอ่ยช่วยดำน้ำได้', correct:'เรือดำน้ำ', wrong:'เรือ'},
+      {ask:'อะไรเอ่ยลอยตัวในน้ำ', correct:'ห่วงยาง', wrong:'คน'},
+      // อาหาร
+      {ask:'อะไรเอ่ยกินได้', correct:'ข้าว', wrong:'รถ'},
+      {ask:'อะไรเอ่ยกินได้ตอนเช้า', correct:'ขนมปัง', wrong:'ลูกโป่ง'},
+      {ask:'อะไรเอ่ยเป็นผลไม้', correct:'กล้วย', wrong:'ดินสอ'},
+      {ask:'อะไรเอ่ยเป็นผัก', correct:'ผักกาด', wrong:'นม'},
+      {ask:'อะไรเอ่ยเป็นของหวาน', correct:'ไอศครีม', wrong:'สารพิษ'},
+      {ask:'อะไรเอ่ยดื่มได้', correct:'นม', wrong:'สบู่'},
+      {ask:'อะไรเอ่ยกินไม่ได้', correct:'ก้อนอิฐ', wrong:'ข้าว'},
+      {ask:'อะไรเอ่ยห้ามกิน', correct:'สารพิษ', wrong:'ขนมปัง'},
+      {ask:'อะไรเอ่ยของหวานสีเข้ม', correct:'ช็อกโกแลต', wrong:'ดินสอ'},
+      {ask:'อะไรเอ่ยเย็นหวานสีสันสวย', correct:'น้ำแข็งใส', wrong:'ผักกาด'},
+      // สิ่งมีชีวิต/มนุษย์
+      {ask:'อะไรเอ่ยเป็นมนุษย์', correct:'คุณครู', wrong:'รถ'},
+      {ask:'อะไรเอ่ยเป็นสัตว์', correct:'สุนัข', wrong:'จักรยานยนต์'},
+      {ask:'อะไรเอ่ยเดินสองขา', correct:'คน', wrong:'รถยนต์'},
+      {ask:'อะไรเอ่ยมีหาง', correct:'แมว', wrong:'คุณครู'},
+      {ask:'อะไรเอ่ยส่งเสียงเห่า', correct:'สุนัข', wrong:'แมว'},
+      // ของใช้/สถานที่
+      {ask:'อะไรเอ่ยใช้เขียนหนังสือ', correct:'ดินสอ', wrong:'ยางลบ'},
+      {ask:'อะไรเอ่ยใช้ลบดินสอ', correct:'ยางลบ', wrong:'ดินสอ'},
+      {ask:'อะไรเอ่ยเป็นกระดาษรวมเล่ม', correct:'หนังสือ', wrong:'จาน'},
+      {ask:'อะไรเอ่ยใช้วาดรูป', correct:'สีเทียน', wrong:'แก้วน้ำ'},
+      {ask:'อะไรเอ่ยใช้ดูเวลา', correct:'นาฬิกา', wrong:'กรรไกร'},
+      {ask:'อะไรเอ่ยไว้ให้นักเรียนไปเรียนหนังสือ', correct:'โรงเรียน', wrong:'เรือ'},
+      {ask:'อะไรเอ่ยอยู่ในห้องเรียน', correct:'โต๊ะ', wrong:'ไอศครีม'},
+      {ask:'อะไรเอ่ยไว้ใช้สำหรับการนั่ง', correct:'เก้าอี้', wrong:'แก้วน้ำ'},
+      {ask:'อะไรเอ่ยเปิดไฟได้', correct:'สวิตช์ไฟ', wrong:'กล้วย'},
+      {ask:'อะไรเอ่ยไว้ใช้สำหรับการวางอาหาร', correct:'จาน', wrong:'ก้อนอิฐ'},
+      // ความปลอดภัย
+      {ask:'อะไรเอ่ยป้องกันศีรษะเวลาอยู่บนมอเตอร์ไซค์', correct:'หมวกกันน็อค', wrong:'โต๊ะ'},
+      {ask:'อะไรเอ่ยใช้เป็นตัวบอกให้คนสามารถข้ามถนนได้', correct:'ทางม้าลาย', wrong:'เครื่องบิน'},
+      {ask:'อะไรเอ่ยส่งสัญญาไฟหยุดรถ', correct:'ไฟแดง', wrong:'ทางม้าลาย'},
+      {ask:'อะไรเอ่ยส่งสัญญาให้รถไปได้', correct:'ไฟเขียว', wrong:'ทางม้าลาย'},
+      {ask:'อะไรเอ่ยไว้เตือนอันตราย', correct:'สัญญาณเตือนภัย', wrong:'ทางม้าลาย'},
+      // กีฬา/กิจกรรม
+      {ask:'อะไรเอ่ยลูกกลมๆกลิ้งแล้วเตะ', correct:'ลูกฟุตบอล', wrong:'คุณครู'},
+      {ask:'อะไรเอ่ยตอนตีต้องตีข้ามตาข่าย', correct:'ลูกแบดมินตัน', wrong:'คุณครู'},
+      {ask:'อะไรเอ่ยตีลงหลุม', correct:'ลูกกอล์ฟ', wrong:'คุณครู'},
+      {ask:'อะไรเอ่ยใช้ออกกำลังกายกระโดดเชือก', correct:'เชือกกระโดด', wrong:'คุณครู'},
+      {ask:'อะไรเอ่ยช่วยทำลอยตัวในน้ำ', correct:'บอร์ดโฟม', wrong:'คุณครู'},
+      // ธรรมชาติ/อากาศ
+      {ask:'อะไรเอ่ยส่องแสงกลางวัน', correct:'ดวงอาทิตย์', wrong:'ดวงจันทร์'},
+      {ask:'อะไรเอ่ยส่องแสงกลางคืน', correct:'ดวงจันทร์', wrong:'ดวงอาทิตย์'},
+      {ask:'อะไรเอ่ยตกจากฟ้า', correct:'ฝน', wrong:'ลม'},
+      {ask:'อะไรเอ่ยพัดให้เย็น', correct:'ลม', wrong:'ฝน'},
+      {ask:'อะไรเอ่ยขึ้นจากดิน เป็นสีเขียว', correct:'หญ้า', wrong:'สบู่'},
+      // เสริมให้ครบ 50
+      {ask:'อะไรเอ่ยไว้ใส่น้ำ', correct:'แก้วน้ำ', wrong:'ช็อกโกแลต'},
+      {ask:'อะไรเอ่ยไว้ใส่ออกไปนอกบ้าน', correct:'รองเท้า', wrong:'ดวงอาทิตย์'},
+      {ask:'อะไรเอ่ยไว้ใช้ทำความสะอาดล้างมือ', correct:'สบู่', wrong:'สารพิษ'},
+      {ask:'อะไรเอ่ยบีบแล้วฟอง', correct:'ยาสระผม', wrong:'ก้อนอิฐ'},
+      {ask:'อะไรเอ่ยถือไว้กันฝนตอนฝนตก', correct:'ร่ม', wrong:'เฮลิคอปเตอร์'},
+      {ask:'อะไรเอ่ยใช้ตัดกระดาษ', correct:'กรรไกร', wrong:'คุณครู'},
+      {ask:'อะไรเอ่ยไว้ใช้เดินทางในที่สาธรารณะร่วมกับผู้อื่น', correct:'รถเมล์', wrong:'เรือดำน้ำ'},
+      {ask:'อะไรเอ่ยวิ่งแข่งในสนามวิ่ง', correct:'นักกีฬา', wrong:'แมว'},
+      {ask:'อะไรเอ่ยไว้ใช้ควบคุมทิศทางรถ', correct:'พวงมาลัยรถ', wrong:'ช็อกโกแลต'},
+      {ask:'อะไรเอ่ยไว้ใช้สำหรับทำการบ้าน', correct:'สมุด', wrong:'คุณครู'}
+    ];
+
+    // 2) รูปภาพสำหรับ "ชีวิตประจำวัน" (ใช้ Twemoji เป็นหลัก)
+    const LIFE_ASSETS = {
+      // ถนน/ดิน
+      'รถ': 'https://img.freepik.com/free-psd/cartoon-modern-car-illustration_23-2151227157.jpg?semt=ais_hybrid&w=740&q=80',
+      'รถยนต์': 'https://www.nicepng.com/png/detail/119-1198513_car-cartoon-png-car-cartoon.png',
+      'จักรยานยนต์': 'https://img.pikbest.com/png-images/qiantu/ps-motorcycle-cartoon-cute-icon-vector_2734740.png!sw800',
+      'รถไฟ': 'https://i.pinimg.com/736x/54/69/dc/5469dce4bf8826d5b8cb3cc0e6ed9a64.jpg',
+      'รถบรรทุก': 'https://i.pinimg.com/564x/ca/82/3e/ca823e058f5be67bdd283adf48a78d03.jpg',
+      // อากาศ
+      'เครื่องบิน': 'https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L2pvYjcyOC0yMTYtdi5qcGc.jpg',
+      'เฮลิคอปเตอร์': 'https://static.vecteezy.com/system/resources/previews/036/271/971/non_2x/ai-generated-helicopter-illustration-helicopter-cartoon-on-transparent-background-free-png.png',
+      'ลูกโป่ง': 'https://www.pngmart.com/files/23/Cartoon-Balloon-PNG-File.png',
+      'ร่มชูชีพ': 'https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTEwL3Jhd3BpeGVsb2ZmaWNlN18zZF9jaGFyYWN0ZXJfaWxsdXN0cmF0aW9uX2Ffd29tZW5fYWR2ZW50dXJlX3NreV9iNTNiNWVlOC1iYTg3LTQxOTAtYmRiMy0yMGRmMWFkMzBkYTIucG5n.png',
+      'ร่มร่อน': 'https://static.vecteezy.com/system/resources/thumbnails/044/620/329/small_2x/cartoon-man-with-parachute-on-transparent-background-png.png',
+      // น้ำ
+      'เรือ': 'https://i.pinimg.com/736x/6d/c3/79/6dc3792181622a60cf04c512af0e78a7.jpg',
+      'เรือยนต์': 'https://static.vecteezy.com/system/resources/previews/033/251/069/non_2x/speedboat-cartoon-illustration-ai-generative-free-png.png',
+      'เรือดำน้ำ': 'https://img.freepik.com/free-vector/submarine-underwater-cartoon-vector-icon-illustration-transportation-technology-icon-isolated_138676-5585.jpg?semt=ais_hybrid&w=740&q=80',
+      'ห่วงยาง': 'https://media.istockphoto.com/id/977434634/vector/swim-ring.jpg?s=612x612&w=0&k=20&c=aJ4tDNEqv1qnJpSODf0TTux_d49Em7haOp7Qvq1_pxM=',
+      // อาหาร
+      'ข้าว': 'https://img.freepik.com/premium-vector/rice-cartoon-isolated-transparent-background-png-cartoon_927498-17149.jpg',
+      'ขนมปัง': 'https://img.freepik.com/premium-vector/cartoon-vector-illustration-isolated-object-delicious-flour-food-bakery-bread-whole-grain-toast_311865-9555.jpg',
+      'กล้วย': 'https://static.vecteezy.com/system/resources/thumbnails/009/597/287/small_2x/banana-fruit-illustration-cartoon-png.png',
+      'ผักกาด': 'https://i.pinimg.com/736x/4a/2e/46/4a2e46b9e13fff263271001c87a5e0ba.jpg',
+      'ไอศครีม': 'https://www.citypng.com/public/uploads/preview/hd-four-balls-ice-cream-cone-illustration-cartoon-png-704081694798368j5r0p8siuw.png?v=2025071504',
+      'นม': 'https://img.freepik.com/premium-vector/milk-cartoon-vector-illustration-cute-milk-carton-cartoon-drawing-with-glass-milk_648083-558.jpg?w=360',
+      'ช็อกโกแลต': 'https://static.vecteezy.com/system/resources/previews/025/775/232/non_2x/chocholate-icon-cartoon-ai-generative-free-png.png',
+      'น้ำแข็งใส': 'https://thumb.ac-illust.com/de/deac3f72bab970ce251e807a3189b792_t.jpeg',
+      //กินไม่ได้
+      'ก้อนอิฐ': 'https://png.pngtree.com/png-vector/20230728/ourmid/pngtree-brick-clipart-bricks-building-construction-stock-vector-png-image_6798803.png',
+      'สารพิษ': 'https://png.pngtree.com/png-vector/20191018/ourmid/pngtree-glass-bottle-of-green-poison-icon-cartoon-style-png-image_1823054.jpg',
+      // มนุษย์/สิ่งมีชีวิต
+      'คุณครู': 'https://i.pinimg.com/736x/cd/92/92/cd9292e01ef5aae6ee782b34535dbad8.jpg',
+      'คน': 'https://static.vecteezy.com/system/resources/previews/024/658/893/non_2x/conversational-3d-male-character-engaged-in-a-discussion-free-png.png',
+      // ของใช้/สถานที่
+      'ดินสอ': 'https://static.vecteezy.com/system/resources/previews/045/905/724/non_2x/school-materials-clip-art-cartoon-pencil-free-png.png',
+      'ยางลบ': 'https://www.citypng.com/public/uploads/preview/clipart-cartoon-rubber-eraser-hd-png-701751694869969y9ey4bzypi.png',
+      'หนังสือ': 'https://img.freepik.com/free-vector/text-books-library-isolated-icon_24877-83372.jpg',
+      'สีเทียน': 'https://static.vecteezy.com/system/resources/previews/025/246/744/non_2x/school-materials-cartoon-crayons-free-png.png',
+      'นาฬิกา': 'https://img.pikbest.com/png-images/qiantu/hand-drawn-cartoon-alarm-clock-png-element_2735100.png!sw800',
+      'โรงเรียน': 'https://img.freepik.com/premium-photo/png-cute-school-png-architecture-building-cartoon_53876-719335.jpg',
+      'โต๊ะ': 'https://static.vecteezy.com/system/resources/previews/041/956/367/non_2x/ai-generated-desk-illustration-isolated-on-transparent-background-free-png.png',
+      'เก้าอี้': 'https://static.vecteezy.com/system/resources/previews/042/053/211/non_2x/ai-generated-wooden-chair-hand-drawn-cartoon-style-illustration-free-png.png',
+      'สวิตช์ไฟ': 'https://www.shutterstock.com/image-vector/switch-vector-icon-doodle-style-600nw-2425928239.jpg',
+      'จาน': 'https://i.pinimg.com/originals/db/5c/0c/db5c0cdc1f32b3fd6e31a5f72ea76a51.jpg',
+      // ความปลอดภัย
+      'หมวกกันน็อค': 'https://www.freeiconspng.com/uploads/helmet-icon-22.jpg',
+      'ทางม้าลาย': 'https://img.pikbest.com/png-images/qiantu/hand-drawn-cartoon-traffic-safe-crossing-the-road_2723180.png!sw800',
+      'ไฟแดง': 'https://img.favpng.com/12/13/18/traffic-light-cartoon-clip-art-png-favpng-GDS97KN17D6zu3dN9EAbvdwVW.jpg',
+      'ไฟเขียว': 'https://www.nicepng.com/png/detail/92-927344_traffic-light-happy-traffic-light-green-cartoon.png',
+      'สัญญาณเตือนภัย': 'https://clipart-library.com/2023/1163898246376n0zzhsijkzeglijxbhyde0bgoeugzr2vth3i912vzfsbc93hahtyzp2gtewk8jm5ayzhrgxmbmvdbepskhhuwrlr6dolc03ni1.png',
+      // กีฬา/กิจกรรม
+      'ลูกฟุตบอล': 'https://atlas-content-cdn.pixelsquid.com/stock-images/cartoon-soccer-ball-y1Mv8yA-600.jpg',
+      'ลูกแบดมินตัน': 'https://img.pikbest.com/png-images/badminton-ball-party-combination-cartoon-clipart_5882603.png!sw800',
+      'ลูกกอล์ฟ': 'https://png.pngtree.com/png-vector/20230907/ourmid/pngtree-golf-ball-with-grass-illustration-in-minimal-style-png-image_10013870.png',
+      'เชือกกระโดด': 'https://static.vecteezy.com/system/resources/previews/024/655/962/non_2x/happy-kid-boy-playing-jump-rope-isolated-free-free-png.png',
+      // ธรรมชาติ/อากาศ
+      'ดวงอาทิตย์': 'https://gallery.yopriceville.com/downloadfullsize/send/7437',
+      'ดวงจันทร์': 'https://icon2.cleanpng.com/20240108/rub/transparent-cartoon-moon-glowing-crescent-moon-in-starry-serene-1710931834207.webp',
+      'ฝน': 'https://png.pngtree.com/png-vector/20201128/ourmid/pngtree-a-few-blue-clouds-and-rain-png-image_2478511.jpg',
+      'ลม': 'https://img.pikbest.com/png-images/qianku/hand-drawn-cartoon-wind_2395813.png!sw800',
+      'หญ้า': 'https://www.pngbie.com/assets/images/icon/Pngbie-%E0%B8%A0%E0%B8%B2%E0%B8%9E%E0%B8%9F%E0%B8%A3%E0%B8%B5-20240710222043.png',
+      // ของใช้เพิ่มเติม
+      'แก้วน้ำ': 'https://img.freepik.com/premium-vector/hand-drawn-glass-cartoon-vector-illustration-clipart-white-background_191095-38317.jpg',
+      'รองเท้า': 'https://img.favpng.com/3/7/6/shoes-cartoon-png-favpng-vqjcQsPTaAzwzdh6bmFXcidtj.jpg',
+      'สบู่': 'https://cerapureth.com/wp-content/uploads/2022/11/Cerapure-kid-soap.png',
+      'ยาสระผม': 'https://png.pngtree.com/png-vector/20240312/ourmid/pngtree-shampoo-cleaning-cartoon-png-image_11929621.png',
+      'ร่ม': 'https://img.freepik.com/premium-vector/umbrella-clipart-cartoon-style-vector-illustration_761413-12337.jpg',
+      'กรรไกร': 'https://img.freepik.com/premium-vector/closed-scissors-cartoon-vector-illustration-tool-cutting-handmade-needlework_893800-161.jpg',
+      'รถเมล์': 'https://img.pikbest.com/png-images/20240821/cute-happy-yellow-school-bus-cartoon-with-children-character-on-isolated-white-background_10745832.png!sw800',
+      'นักกีฬา': 'https://img.favpng.com/22/0/11/cartoon-sport-athlete-clip-art-png-favpng-3aJKinXx5u60VZzdXBxM4bhsD.jpg',
+      'พวงมาลัยรถ': 'https://thumbnail.imgbin.com/4/1/2/cartoon-driver-cartoon-character-driving-a-car-N6aaGuE2_t.jpg',
+      'สมุด': 'https://media.istockphoto.com/id/1557600935/vector/green-notebook-and-pen-top-view.jpg?s=612x612&w=0&k=20&c=RqvN3A-mkaccXqLBvMbyyyWb7siZjXjXDDWUgemD_Sg='
+    };
+
+    // 3) แปลงชื่อ → อ็อบเจ็กต์ที่มีรูป/เสียงถ้ามี
+    function lifeOptionToObj(name){
+      // ถ้าเป็นสัตว์ ใช้รูป/เสียงจาก ANIMALS
+      if(nameToAnimal[name]){
+        const an = nameToAnimal[name];
+        return { name, key: an.key, img: an.imageUrl, alt: `รูป${name}` };
+      }
+      // ถ้ามีใน LIFE_ASSETS ใช้ Twemoji/รูป
+      if(LIFE_ASSETS[name]){
+        return { name, img: LIFE_ASSETS[name], alt:`รูป${name}` };
+      }
+      // ไม่งั้นเป็นข้อความอย่างเดียว
+      return { name, textOnly:true };
+    }
+
+    function startLifeGame(){
+      showScreen('life');
+      const shuffled=[...LIFE_BANK].sort(()=>Math.random()-0.5).slice(0,10);
+      const state = {
+        idx:0, score:0, selected:null,
+        quiz:shuffled.map(q=>{
+          const correctIndex=Math.random()<0.5?0:1;
+          const leftName  = correctIndex ? q.wrong : q.correct;
+          const rightName = correctIndex ? q.correct : q.wrong;
+          return {
+            ask:q.ask,
+            correctIndex,
+            options:[ lifeOptionToObj(leftName), lifeOptionToObj(rightName) ],
+            correctName:q.correct
+          };
+        }),
+        timer:null
+      };
+      renderLife(state);
+    }
+
+    function renderLife(st){
+      const q = st.quiz[st.idx];
+      const qText = document.getElementById('qText-life');
+      const qIndex = document.getElementById('qIndex-life');
+      const qBar = document.getElementById('qBar-life');
+      const options = document.getElementById('options-life');
+      const submit = document.getElementById('submitBtn-life');
+      const skip = document.getElementById('skipWaitBtn-life');
+      const fb = document.getElementById('feedback-life');
+
+      qText.textContent = q.ask;
+      qIndex.textContent = st.idx+1;
+      qBar.style.width = `${(st.idx)/10*100}%`;
+      options.innerHTML=''; st.selected=null; submit.disabled=true; skip.classList.add('hidden'); fb.textContent='';
+
+      q.options.forEach((opt, idx)=>{
+        const card=document.createElement('button');
+        card.className='option'; card.type='button';
+
+        // ถ้ามีรูป แสดงรูป + ปุ่มเสียง (ถ้าเป็นสัตว์)
+        card.innerHTML = opt.textOnly
+          ? `
+            <div style="display:flex;align-items:center;justify-content:center;min-height:220px;font-size:64px">🅰️</div>
+            <footer><span class="name">${opt.name}</span></footer>
+            <div class="mark">✔</div>
+          `
+          : `
+            <img class="opt-img" ${opt.key?`data-key="${opt.key}"`:''} src="${opt.img}" alt="${opt.alt}">
+            <footer>
+              <span class="name">${opt.name}</span>
+              ${opt.key ? `<button class="sound-btn" type="button" aria-label="ฟังเสียงของ ${opt.name}">🔊 ฟังเสียง</button>` : ''}
+            </footer>
+            <div class="mark">✔</div>
+          `;
+
+        // เลือกการ์ด
+        card.addEventListener('click', (e)=>{
+          if(e.target && e.target.classList.contains('sound-btn')) return;
+          [...options.children].forEach(c=>c.classList.remove('selected'));
+          card.classList.add('selected'); st.selected=idx; submit.disabled=false; fb.textContent='';
+          speakThai(opt.name);
+        });
+
+        // คลิกภาพให้เลือก + เล่นเสียง (ถ้าเป็นสัตว์)
+        const imgEl = card.querySelector('.opt-img');
+        if(imgEl){
+          imgEl.addEventListener('click',(e)=>{
+            e.stopPropagation();
+            [...options.children].forEach(c=>c.classList.remove('selected'));
+            card.classList.add('selected'); st.selected=idx; submit.disabled=false; fb.textContent='';
+            if(opt.key) playAnimalSound(opt.key); else speakThai(opt.name);
+          });
+        }
+        // ปุ่มฟังเสียงเฉพาะสัตว์
+        const sbtn = card.querySelector('.sound-btn');
+        if(sbtn){
+          sbtn.addEventListener('click',(e)=>{ e.stopPropagation(); playAnimalSound(opt.key); });
+        }
+
+        options.appendChild(card);
+      });
+
+      submit.onclick=()=>{
+        if(st.selected==null) return;
+        const correct = st.selected===q.correctIndex;
+        if(correct) st.score++;
+        [...options.children].forEach((c,i)=>{
+          const mark=c.querySelector('.mark');
+          if(i===q.correctIndex){ c.classList.add('correct'); mark.title='ถูกต้อง'; }
+          else if(i===st.selected){ c.classList.add('wrong'); mark.textContent='✖'; mark.title='ผิด'; }
+        });
+        fb.textContent = correct ? '✅ เก่งมาก! คำตอบถูกต้อง' : `❌ ยังไม่ถูกนะ คำตอบคือ “${q.correctName}”`;
+        submit.disabled=true; skip.classList.remove('hidden');
+        st.timer=setTimeout(()=>nextLife(st),5000);
+      };
+      skip.onclick=()=>{ clearTimeout(st.timer); nextLife(st); };
+      document.getElementById('playAgain-life').onclick=()=> startLifeGame();
+    }
+
+    function nextLife(st){
+      st.idx++;
+      if(st.idx<10) renderLife(st);
+      else finishLife(st);
+    }
+    function finishLife(st){
+      document.getElementById('qBar-life').style.width='100%';
+      const name=(localStorage.getItem('childName')||'น้องเก่ง');
+      document.getElementById('certName-life').textContent=name;
+      document.getElementById('certScore-life').textContent=`คะแนน: ${st.score}/10`;
+      document.getElementById('certDate-life').textContent=new Date().toLocaleString('th-TH',{dateStyle:'long', timeStyle:'short'});
+      document.getElementById('finishBlock-life').classList.remove('hidden');
+      document.getElementById('dlPdf-life').focus();
+    }
+    // ดาวน์โหลดใบประกาศ (เกม 4)
+    document.getElementById('dlJpg-life').addEventListener('click', async ()=>{
+      const { dataUrl } = await captureCertificate('certificate-life');
+      const a = document.createElement('a'); const name = (localStorage.getItem('childName')||'เด็กดี');
+      a.href = dataUrl; a.download = `ผลงาน_${name}.jpg`; document.body.appendChild(a); a.click(); a.remove();
+    });
+    document.getElementById('dlPdf-life').addEventListener('click', async ()=>{
+      const { jsPDF } = window.jspdf;
+      const { canvas } = await captureCertificate('certificate-life');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf = new jsPDF({ orientation:'landscape', unit:'pt', format:'a4' });
+      const pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(pageW/canvas.width, pageH/canvas.height);
+      const w = canvas.width*ratio, h = canvas.height*ratio, x=(pageW-w)/2, y=(pageH-h)/2;
+      pdf.addImage(imgData, 'JPEG', x, y, w, h);
+      const name = (localStorage.getItem('childName')||'เด็กดี'); pdf.save(`ผลงาน_${name}.pdf`);
+    });
+
+    // ==============================
+    // 💾 บันทึกชื่อ + localStorage (ใช้ร่วมทุกเกม)
+    // ==============================
+    const childNameInput = document.getElementById('childName');
+    const saveNameBtn = document.getElementById('saveNameBtn');
+    function saveName(){ localStorage.setItem('childName', childNameInput.value.trim()); alert('บันทึกชื่อแล้ว'); }
+    saveNameBtn.addEventListener('click', saveName);
+    childNameInput.addEventListener('keydown', e=>{ if(e.key==='Enter') saveName(); });
+    (function initName(){ const n = localStorage.getItem('childName'); if(n) childNameInput.value = n; })();
+
+    // ==============================
+    // ♿ เข้าถึงได้ + ปุ่มกลับบ้าน
+    // ==============================
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') showScreen('home'); });
+  </script>
+</body>
+</html>
