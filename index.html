@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>วิทยาลัยเทคนิคปัว Kids Play — เว็บเกมเด็กอนุบาล ✨🎈</title>
+  <title>kid game online puatc✨🎈</title>
   <meta name="description" content="เว็บเล่นเกมสำหรับเด็กอนุบาล: ภาพใหญ่ กดง่าย สีสบายตา พร้อมบันทึกผลงานเป็น PDF/JPG" />
 
   <!-- ไลบรารีสำหรับบันทึกผลงานเป็น PDF/JPG (ฝั่งผู้ใช้) -->
@@ -38,7 +38,7 @@
     .container{max-width:1200px; margin:0 auto; padding:16px;}
     .topbar{display:flex; align-items:center; gap:12px; justify-content:space-between}
     .brand{display:flex; align-items:center; gap:10px}
-    .logo{width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,var(--brand),#7c3aed); box-shadow:var(--shadow);}
+    .logo{width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,var(--brand),#7c3aed); box-shadow:var(--shadow); object-fit:cover}
     .brand h1{font-size:20px; margin:0}
     .child-name{
       display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid #e5e7eb; border-radius:14px; padding:8px 12px; box-shadow:var(--shadow);
@@ -46,45 +46,26 @@
     .child-name input{border:0; outline:0; font-size:16px; width:180px}
     .btn{
       appearance:none; border:0; cursor:pointer; padding:12px 16px; border-radius:16px; font-weight:700; box-shadow:var(--shadow);
-      background:var(--brand); color:white; font-size:16px; transition:transform .05s ease;
+      background:var(--brand); color:white; font-size:16px; transition:transform .05s ease; text-decoration:none; display:inline-block;
     }
     .btn:active{transform:translateY(1px)}
     .btn.secondary{background:#0ea5e9}
     .btn.ghost{background:var(--card); color:var(--ink); border:1px solid #e5e7eb}
+    .btn.next-big{ padding:18px 26px; font-size:20px; border-radius:22px; }
+    .btn.tts{ background:#22c55e; }
+    .btn.tts.ghost{ background:var(--card); border:2px dashed #86efac; color:#065f46; }
 
-    /* ✅ เพิ่ม: ปุ่มถัดไปใหญ่ขึ้น (ข้อ 2) */
-    .btn.next-big{
-      padding:18px 26px;        /* ใหญ่ขึ้น */
-      font-size:20px;           /* ตัวใหญ่ขึ้น */
-      border-radius:22px;
-    }
-    /* ✅ เพิ่ม: ปุ่มฟังคำถาม (ข้อ 3) */
-    .btn.tts{
-      background:#22c55e;
-    }
-    .btn.tts.ghost{
-      background:var(--card);
-      border:2px dashed #86efac;
-      color:#065f46;
-    }
-
-    /* หมวดรวมเกม */
-    .games-grid{
-      display:grid; gap:14px; grid-template-columns: repeat(2, minmax(140px,1fr));
-    }
+    .games-grid{ display:grid; gap:14px; grid-template-columns: repeat(2, minmax(140px,1fr)); }
     @media (min-width:600px){ .games-grid{ grid-template-columns: repeat(3, minmax(160px,1fr)); } }
     @media (min-width:900px){ .games-grid{ grid-template-columns: repeat(5, minmax(180px,1fr)); } }
 
-    .game-card{
-      display:block; background:var(--card); border-radius:22px; overflow:hidden; text-decoration:none; color:inherit; box-shadow:var(--shadow); border:1px solid #eef2f7;
-    }
+    .game-card{ display:block; background:var(--card); border-radius:22px; overflow:hidden; text-decoration:none; color:inherit; box-shadow:var(--shadow); border:1px solid #eef2f7; }
     .game-thumb{ aspect-ratio: 16/12; display:flex; align-items:center; justify-content:center; font-size:76px; }
     .game-card img{width:100%; height:100%; object-fit:contain; padding:12px}
     .game-meta{padding:12px 14px;}
     .game-title{font-size:18px; font-weight:800; margin:0 0 6px}
     .game-desc{margin:0; color:var(--soft-ink); font-size:14px}
 
-    /* หน้าจอเกม */
     .screen{display:none}
     .screen.active{display:block}
     .game-wrap{background:var(--card); border-radius:26px; padding:16px; box-shadow:var(--shadow); border:1px solid #eef2f7}
@@ -92,14 +73,11 @@
     .crumbs{display:flex; align-items:center; gap:10px; margin-bottom:10px}
     .crumbs a{color:#2563eb; text-decoration:none; font-weight:700}
 
-    .progress{
-      display:flex; align-items:center; justify-content:space-between; gap:10px; margin:10px 0 18px;
-    }
+    .progress{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:10px 0 18px; }
     .bar{flex:1; height:14px; background:#e5e7eb; border-radius:999px; overflow:hidden}
     .bar > span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--brand),#06b6d4);}
 
     .question{font-size:26px; font-weight:900; margin:6px 0 8px}
-    /* ✅ เพิ่ม: แถวปุ่มใต้คำถาม */
     .q-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:6px 0 14px; }
 
     .options{display:grid; grid-template-columns:1fr 1fr; gap:14px}
@@ -114,7 +92,6 @@
     .option .name{font-size:18px; font-weight:800}
     .sound-btn{border:0; background:#10b981; color:white; font-weight:800; padding:10px 12px; border-radius:12px; cursor:pointer}
 
-    /* ติ๊กถูก/กากบาท หลังเฉลย */
     .mark{
       position:absolute; inset:auto 8px 8px auto; width:56px; height:56px; border-radius:50%; display:none; align-items:center; justify-content:center;
       background:white; box-shadow:var(--shadow); border:4px solid var(--correct); color:var(--correct); font-size:30px; font-weight:900;
@@ -124,31 +101,72 @@
 
     .actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
 
-    .result{
-      margin-top:18px; padding:16px; border-radius:22px; background:linear-gradient(180deg,#f0f9ff,#ccfbf1); border:1px solid #bae6fd; box-shadow:var(--shadow);
+    /* ===== ปรับปุ่ม "ส่งคำตอบ" ให้ใหญ่ กว้าง และอยู่กลางทุกเกม ===== */
+    #screen-find .actions,
+    #screen-color .actions,
+    #screen-quiz .actions,
+    #screen-life .actions{
+      justify-content: center;
+      gap: 14px;
+    }
+    #submitBtn,
+    #submitBtn-color,
+    #submitBtn-quiz,
+    #submitBtn-life{
+      font-size:22px;
+      padding:18px 28px;
+      border-radius:26px;
+      min-width:280px;
+      width:clamp(260px,42vw,460px);
+      height:64px;
+      box-shadow:var(--shadow);
+    }
+    #submitBtn[disabled],
+    #submitBtn-color[disabled],
+    #submitBtn-quiz[disabled],
+    #submitBtn-life[disabled]{ opacity:.55; cursor:not-allowed; }
+    @media (max-width:520px){
+      #submitBtn,
+      #submitBtn-color,
+      #submitBtn-quiz,
+      #submitBtn-life{
+        width:100%; min-width:0;
+      }
     }
 
-    /* ใบประกาศ */
+    .result{ margin-top:18px; padding:16px; border-radius:22px; background:linear-gradient(180deg,#f0f9ff,#ccfbf1); border:1px solid #bae6fd; box-shadow:var(--shadow); }
+
     .certificate{
       width: 100%; max-width: 900px; margin: 0 auto; background:white; border-radius:30px; box-shadow:var(--shadow);
-      padding:28px; border:6px solid var(--accent); text-align:center;
+      padding:28px; border:6px solid --accent; text-align:center;
     }
     .certificate h3{font-size:28px; margin:0 0 12px}
     .certificate .name{font-size:34px; font-weight:900}
     .certificate .score{font-size:22px; margin-top:6px}
+    .certificate .summary{font-size:20px; margin-top:10px; color:#065f46; background:#ecfeff; display:inline-block; padding:8px 14px; border-radius:12px; border:1px dashed #99f6e4}
     .cert-row{display:flex; justify-content:center; gap:18px; flex-wrap:wrap; margin-top:16px}
 
     .muted{color:var(--soft-ink)}
     .hidden{display:none !important}
 
-    /* เกมสี */
     .color-box{width:100%; aspect-ratio:1/1;}
     .option.color .name{font-size:20px}
 
-    /* ✅ เพิ่ม: แต่งอิโมจิให้หัวข้อหน้าแรก */
-    .emoji-title::after{
-      content:"  🎉🌈🎯";
+    .emoji-title::after{ content:"  🎉🌈🎯"; }
+
+    .review-btn{ border-style:dashed; border-color:#fde68a; }
+
+    /* Toast เล็กๆ สำหรับแจ้งผลบันทึก */
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background:#0ea5e9; color:#fff; padding:10px 14px; border-radius:12px; box-shadow:var(--shadow);
+      font-weight:700; z-index:50; display:none;
     }
+    .toast.error{ background:#ef4444; }
+    .toast.show{ display:block; }
+
+    /* ซ่อนปุ่มส่งคำตอบของเกมเลือกสี (คลิกการ์ด = ตอบทันที) */
+    #submitBtn-color { display: none !important; }
   </style>
 </head>
 <body>
@@ -162,58 +180,49 @@
         <span>👶 ชื่อเด็ก:</span>
         <input id="childName" type="text" inputmode="text" placeholder="พิมพ์ชื่อที่นี่" aria-label="ชื่อเด็ก" />
         <button class="btn ghost" id="saveNameBtn" title="บันทึกชื่อ">บันทึก</button>
+        <a class="btn ghost review-btn" id="reviewBtn" target="_blank" rel="noopener"
+           href="https://docs.google.com/forms/d/e/1FAIpQLSdFyr9Pt_H8c3yCccugGBqAKn5-vDr5lzJe0z1TzASWLGbDUw/viewform?usp=dialog"
+           title="ส่งความคิดเห็นเกี่ยวกับเกม">รีวิว ⭐</a>
       </div>
     </div>
   </header>
 
   <main class="container">
-    <!-- หน้ารวมเกม -->
+    <!-- ====== หน้ารวมเกม ====== -->
     <section id="screen-home" class="screen active" aria-label="หน้าเลือกเกม">
       <h2 class="emoji-title" style="margin:10px 0 14px">เลือกเกมที่อยากเล่น</h2>
       <div class="games-grid" id="gamesGrid"></div>
       <p class="muted" style="margin-top:10px">เลือกเล่นเกมได้เต็มที่เลยครับ!!! 🎮💥</p>
     </section>
 
-    <!-- หน้าจอเกม: เลือกภาพที่ถูกต้อง -->
+    <!-- ====== เกม: เลือกภาพที่ถูกต้อง ====== -->
     <section id="screen-find" class="screen" aria-label="เกมเลือกภาพที่ถูกต้อง">
       <nav class="crumbs">
         <a href="#" class="backHome">← กลับหน้าแรก</a>
         <span class="muted">/ เลือกภาพที่ถูกต้อง</span>
       </nav>
-
       <div class="game-wrap">
         <div class="progress">
           <div><strong>ข้อที่ <span id="qIndex">1</span></strong> / 10</div>
           <div class="bar" aria-label="ความคืบหน้า"><span id="qBar" style="width:0%"></span></div>
         </div>
-
         <div class="question" id="qText">…</div>
-        <!-- ✅ เพิ่มปุ่มฟังคำถาม -->
-        <div class="q-actions">
-          <button class="btn tts ghost" id="qSpeakBtn">🔊 ฟังคำถาม</button>
-        </div>
-
+        <div class="q-actions"><button class="btn tts ghost" id="qSpeakBtn">🔊 ฟังคำถาม</button></div>
         <div class="options"></div>
-
         <div class="actions">
           <button class="btn" id="submitBtn" disabled>ส่งคำตอบ ✅</button>
-          <!-- ✅ เพิ่ม class next-big ให้ปุ่มถัดไป (ข้อ 2) -->
           <button class="btn ghost next-big hidden" id="skipWaitBtn">👉 ถัดไปทันที</button>
         </div>
-
         <div id="feedback" class="muted" style="margin-top:6px"></div>
-
         <div id="finishBlock" class="result hidden">
           <div class="certificate" id="certificate-find">
             <h3>🎉 เก่งมากเลย! 🏅</h3>
             <div class="name" id="certName">ชื่อเด็ก</div>
             <div class="score" id="certScore">คะแนน: 0/10</div>
+            <div class="summary" id="certSummary-find">...</div>
             <div class="muted" id="certDate">วันที่</div>
             <div class="cert-row" style="margin-top:16px">
-              <div style="font-size:56px">🏆</div>
-              <div style="font-size:56px">🎓</div>
-              <div style="font-size:56px">🌈</div>
-              <div style="font-size:56px">🥳</div>
+              <div style="font-size:56px">🏆</div><div style="font-size:56px">🎓</div><div style="font-size:56px">🌈</div><div style="font-size:56px">🥳</div>
             </div>
           </div>
           <div class="cert-row">
@@ -226,45 +235,34 @@
       </div>
     </section>
 
-    <!-- หน้าจอเกม: เลือกสี -->
+    <!-- ====== เกม: เลือกสีที่ถูกต้อง ====== -->
     <section id="screen-color" class="screen" aria-label="เกมเลือกสีที่ถูกต้อง">
       <nav class="crumbs">
         <a href="#" class="backHome">← กลับหน้าแรก</a>
         <span class="muted">/ เลือกสีที่ถูกต้อง</span>
       </nav>
-
       <div class="game-wrap">
         <div class="progress">
           <div><strong>ข้อที่ <span id="qIndex-color">1</span></strong> / 10</div>
           <div class="bar" aria-label="ความคืบหน้า"><span id="qBar-color" style="width:0%"></span></div>
         </div>
-
         <div class="question" id="qText-color">…</div>
-        <!-- ✅ เพิ่มปุ่มฟังคำถาม -->
-        <div class="q-actions">
-          <button class="btn tts ghost" id="qSpeakBtn-color">🔊 ฟังคำถาม</button>
-        </div>
-
+        <div class="q-actions"><button class="btn tts ghost" id="qSpeakBtn-color">🔊 ฟังคำถาม</button></div>
         <div class="options" id="options-color"></div>
-
         <div class="actions">
           <button class="btn" id="submitBtn-color" disabled>ส่งคำตอบ ✅</button>
           <button class="btn ghost next-big hidden" id="skipWaitBtn-color">👉 ถัดไปทันที</button>
         </div>
-
         <div id="feedback-color" class="muted" style="margin-top:6px"></div>
-
         <div id="finishBlock-color" class="result hidden">
           <div class="certificate" id="certificate-color">
             <h3>🎉 เก่งมากเลย! 🎨</h3>
             <div class="name" id="certName-color">ชื่อเด็ก</div>
             <div class="score" id="certScore-color">คะแนน: 0/10</div>
+            <div class="summary" id="certSummary-color">...</div>
             <div class="muted" id="certDate-color">วันที่</div>
             <div class="cert-row" style="margin-top:16px">
-              <div style="font-size:56px">🏆</div>
-              <div style="font-size:56px">🎨</div>
-              <div style="font-size:56px">🌈</div>
-              <div style="font-size:56px">✨</div>
+              <div style="font-size:56px">🏆</div><div style="font-size:56px">🎨</div><div style="font-size:56px">🌈</div><div style="font-size:56px">✨</div>
             </div>
           </div>
           <div class="cert-row">
@@ -277,45 +275,34 @@
       </div>
     </section>
 
-    <!-- หน้าจอเกม: เลือกคำตอบตามหมวด -->
+    <!-- ====== เกม: เลือกคำตอบที่ถูกต้อง ====== -->
     <section id="screen-quiz" class="screen" aria-label="เกมเลือกคำตอบที่ถูกต้อง">
       <nav class="crumbs">
         <a href="#" class="backHome">← กลับหน้าแรก</a>
         <span class="muted">/ เลือกคำตอบที่ถูกต้อง</span>
       </nav>
-
       <div class="game-wrap">
         <div class="progress">
           <div><strong>ข้อที่ <span id="qIndex-quiz">1</span></strong> / 10</div>
           <div class="bar" aria-label="ความคืบหน้า"><span id="qBar-quiz" style="width:0%"></span></div>
         </div>
-
         <div class="question" id="qText-quiz">…</div>
-        <!-- ✅ เพิ่มปุ่มฟังคำถาม -->
-        <div class="q-actions">
-          <button class="btn tts ghost" id="qSpeakBtn-quiz">🔊 ฟังคำถาม</button>
-        </div>
-
+        <div class="q-actions"><button class="btn tts ghost" id="qSpeakBtn-quiz">🔊 ฟังคำถาม</button></div>
         <div class="options" id="options-quiz"></div>
-
         <div class="actions">
           <button class="btn" id="submitBtn-quiz" disabled>ส่งคำตอบ ✅</button>
           <button class="btn ghost next-big hidden" id="skipWaitBtn-quiz">👉 ถัดไปทันที</button>
         </div>
-
         <div id="feedback-quiz" class="muted" style="margin-top:6px"></div>
-
         <div id="finishBlock-quiz" class="result hidden">
           <div class="certificate" id="certificate-quiz">
             <h3>🎉 เก่งมากเลย! ❓🌿</h3>
             <div class="name" id="certName-quiz">ชื่อเด็ก</div>
             <div class="score" id="certScore-quiz">คะแนน: 0/10</div>
+            <div class="summary" id="certSummary-quiz">...</div>
             <div class="muted" id="certDate-quiz">วันที่</div>
             <div class="cert-row" style="margin-top:16px">
-              <div style="font-size:56px">🏆</div>
-              <div style="font-size:56px">❓</div>
-              <div style="font-size:56px">🌿</div>
-              <div style="font-size:56px">🎯</div>
+              <div style="font-size:56px">🏆</div><div style="font-size:56px">❓</div><div style="font-size:56px">🌿</div><div style="font-size:56px">🎯</div>
             </div>
           </div>
           <div class="cert-row">
@@ -328,45 +315,34 @@
       </div>
     </section>
 
-    <!-- หน้าจอเกม: ชีวิตประจำวัน -->
+    <!-- ====== เกม: ชีวิตประจำวัน ====== -->
     <section id="screen-life" class="screen" aria-label="เกมชีวิตประจำวัน">
       <nav class="crumbs">
         <a href="#" class="backHome">← กลับหน้าแรก</a>
         <span class="muted">/ ชีวิตประจำวัน</span>
       </nav>
-
       <div class="game-wrap">
         <div class="progress">
           <div><strong>ข้อที่ <span id="qIndex-life">1</span></strong> / 10</div>
           <div class="bar" aria-label="ความคืบหน้า"><span id="qBar-life" style="width:0%"></span></div>
         </div>
-
         <div class="question" id="qText-life">…</div>
-        <!-- ✅ เพิ่มปุ่มฟังคำถาม -->
-        <div class="q-actions">
-          <button class="btn tts ghost" id="qSpeakBtn-life">🔊 ฟังคำถาม</button>
-        </div>
-
+        <div class="q-actions"><button class="btn tts ghost" id="qSpeakBtn-life">🔊 ฟังคำถาม</button></div>
         <div class="options" id="options-life"></div>
-
         <div class="actions">
           <button class="btn" id="submitBtn-life" disabled>ส่งคำตอบ ✅</button>
           <button class="btn ghost next-big hidden" id="skipWaitBtn-life">👉 ถัดไปทันที</button>
         </div>
-
         <div id="feedback-life" class="muted" style="margin-top:6px"></div>
-
         <div id="finishBlock-life" class="result hidden">
           <div class="certificate" id="certificate-life">
             <h3>🎉 เก่งมากเลย! 🚗🍎</h3>
             <div class="name" id="certName-life">ชื่อเด็ก</div>
             <div class="score" id="certScore-life">คะแนน: 0/10</div>
+            <div class="summary" id="certSummary-life">...</div>
             <div class="muted" id="certDate-life">วันที่</div>
             <div class="cert-row" style="margin-top:16px">
-              <div style="font-size:56px">🏆</div>
-              <div style="font-size:56px">🚗</div>
-              <div style="font-size:56px">🍎</div>
-              <div style="font-size:56px">🌟</div>
+              <div style="font-size:56px">🏆</div><div style="font-size:56px">🚗</div><div style="font-size:56px">🍎</div><div style="font-size:56px">🌟</div>
             </div>
           </div>
           <div class="cert-row">
@@ -380,9 +356,87 @@
     </section>
   </main>
 
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite">กำลังบันทึก...</div>
+
+  <!-- =========================
+       ⚙️ เชื่อม Apps Script (POST JSON) + fallback no-cors
+  ========================== -->
+  <script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycf-ljCvqv_FcDsQTK_Mo0rzUVHWN_xq0z4lEJ9WKn_RGXseDrt1avHm4BbQduvGYJ/exec';
+
+    const toastEl = document.getElementById('toast');
+    function toast(msg, isError=false, ms=1800){
+      toastEl.textContent = msg;
+      toastEl.classList.toggle('error', !!isError);
+      toastEl.classList.add('show');
+      setTimeout(()=> toastEl.classList.remove('show'), ms);
+    }
+
+    async function postWithTimeout(url, options={}, timeoutMs=8000){
+      const ctrl = new AbortController();
+      const id = setTimeout(()=>ctrl.abort(), timeoutMs);
+      try{
+        const res = await fetch(url, { ...options, signal: ctrl.signal });
+        clearTimeout(id);
+        return res;
+      }catch(err){
+        clearTimeout(id);
+        throw err;
+      }
+    }
+
+    async function logResult(gameId, gameTitle, score){
+      const payload = {
+        name: (localStorage.getItem('childName')||'น้องเก่ง').trim(),
+        gameId, gameTitle,
+        score: Number(score)||0,
+        submittedAtISO: new Date().toISOString()
+      };
+      try{
+        toast('กำลังบันทึกผล...');
+        const res = await postWithTimeout(APPS_SCRIPT_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify(payload),
+        }, 8000);
+
+        let ok = false;
+        try{
+          const data = await res.json();
+          ok = !!data?.ok;
+        }catch(e){
+          ok = res.ok;
+        }
+        if(ok){
+          toast('บันทึกสำเร็จ ✅');
+          return;
+        }
+        throw new Error('CORS or JSON parse failed');
+      }catch(e1){
+        console.warn('POST normal failed, fallback to no-cors:', e1);
+        try{
+          await postWithTimeout(APPS_SCRIPT_URL, {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json' },
+            body: JSON.stringify(payload),
+            mode:'no-cors'
+          }, 8000);
+          toast('ส่งแล้ว (โหมด no-cors) ✅');
+        }catch(e2){
+          console.error('POST no-cors failed:', e2);
+          toast('บันทึกไม่สำเร็จ', true);
+        }
+      }
+    }
+  </script>
+
+  <!-- =========================
+       🔽 สคริปต์เกม + เกียรติบัตร
+  ========================== -->
   <script>
     // ==========================
-    // 🔧 ตั้งค่าและโครงสร้างเกม (หน้าแรก)
+    // 🔧 หน้าแรก
     // ==========================
     const games = [
       { id: 'find',  title: 'เลือกภาพที่ถูกต้อง 🐾', desc: 'ลองเล่นดูสิครับสนุกแน่นอน 🎉', icon: 'https://cdn.discordapp.com/attachments/1402316480573607999/1409176784498462831/image.png?ex=68ac6da6&is=68ab1c26&hm=557c64769da92d4f9dcd96f43e98dbc608f7d8822bb43157c759bc600d204c42' },
@@ -390,6 +444,13 @@
       { id: 'quiz',  title: 'เลือกคำตอบที่ถูกต้อง ✍️', desc: 'ลองเล่นดูสิครับสนุกแน่นอน 🤔', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2753.svg' },
       { id: 'life',  title: 'ชีวิตประจำวัน 🚗🍎', desc: 'ลองเล่นดูสิครับสนุกแน่นอน 🧩', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f3c3.svg' }
     ];
+
+    const GAME_TITLES = {
+      find: 'เลือกภาพที่ถูกต้อง',
+      color: 'เลือกสีที่ถูกต้อง',
+      quiz: 'เลือกคำตอบที่ถูกต้อง',
+      life: 'ชีวิตประจำวัน'
+    };
 
     const gamesGrid = document.getElementById('gamesGrid');
     games.forEach(g => {
@@ -422,14 +483,12 @@
     }
 
     // ==============================
-    // 🔊 เสียงพูด (สำรองเมื่อไม่มีไฟล์เสียงสัตว์)
-    // ✅ อัปเกรด: พยายามเลือกเสียงที่ชื่อมี 'Siri' ก่อน (ถ้ามีในอุปกรณ์)
+    // 🔊 เสียงพูด
     // ==============================
     function speakThai(text){
       try{
         const u = new SpeechSynthesisUtterance(text);
         const voices = speechSynthesis.getVoices();
-        // เรียงลำดับความสำคัญ: Siri(Thai) > Thai > อะไรก็ได้
         const siri = voices.find(v => /siri/i.test(v.name) && /th|Thai/i.test(v.lang));
         const th   = voices.find(v => /th|Thai/i.test(v.lang));
         u.voice = siri || th || voices[0];
@@ -444,21 +503,17 @@
     const audioPlayer = new Audio();
     audioPlayer.preload = 'auto';
 
-    // ✅ ยูทิลิตี้ Twemoji
-    const twemojiBase = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
-    const tw = hex => `${twemojiBase}${hex}.svg`;
-
-    // ✅ รายชื่อสัตว์ (ของเดิม + ใช้รูป URL จริง) — (เหมือนเดิม)
+    // ✅ รายชื่อสัตว์ + ภาพ
     const ANIMALS = [
       { key:'elephant', name:'ช้าง', imageUrl:'https://pngfile.net/files/preview/1280x957/21565851986bbscuwaiidwdnhq8y2ealfi4js8ykwz8zw5jt3o7fdaekwggribblx66oc0joidxdw3gtjo3l69apebps8ulquytobfk6qoslhwx.png' },
       { key:'lion', name:'สิงโต', imageUrl:'https://img.freepik.com/free-photo/3d-animated-cartoon-lion_23-2150800715.jpg' },
       { key:'tiger', name:'เสือ', imageUrl:'https://static.vecteezy.com/system/resources/thumbnails/049/159/624/small_2x/royal-bangle-tiger-3d-cartoon-image-png.png' },
       { key:'horse', name:'ม้า', imageUrl:'https://png.pngtree.com/png-vector/20241024/ourmid/pngtree-horse-cartoon-png-image_14162403.png' },
       { key:'cow', name:'วัว', imageUrl:'https://i.pinimg.com/736x/e9/4e/53/e94e536c7dbeebdd212ac77ffb8ee945.jpg' },
-      { key:'pig', name:'หมู', imageUrl:'https://easydrawingguides.com/wp-content/uploads/2017/04/how-to-draw-a-cartoon-pig-featured-image-1200.png' },
+      { key:'pig', name:'หมู', imageUrl:'https://img.freepik.com/premium-vector/cute-cartoon-pig-illustration_53876-241258.jpg' },
       { key:'dog', name:'สุนัข', imageUrl:'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-cute-cartoon-happy-dog-png-file-png-image_10201723.png' },
-      { key:'cat', name:'แมว', imageUrl:'https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA4L3Jhd3BpeGVsb2ZmaWNlMTVfM2RfcmVuZGVyX2NoYXJhY3Rlcl9vZl9hX2JyaXRpc2hfc2hvcnRoYWlyX2tpdF9mNThkN2U2Ny05YTk1LTQ1MjEtOGYwMy1hODM3YmQ5MWY4ZmFfMS5wbmc.png' },
-      { key:'rabbit', name:'กระต่าย', imageUrl:'https://toppng.com/uploads/preview/bunny-cartoon-png-picture-freeuse-stock-rabbit-cartoo-11563091027wziigvslvq.png' },
+      { key:'cat', name:'แมว', imageUrl:'https://img.freepik.com/premium-vector/cute-cartoon-white-cat-isolated-white-background_1057-111316.jpg' },
+      { key:'rabbit', name:'กระต่าย', imageUrl:'https://img.freepik.com/premium-photo/cute-cartoon-bunny-rabbit-sitting_494260-1314.jpg' },
       { key:'bear', name:'หมี', imageUrl:'https://png.pngtree.com/png-vector/20240621/ourmid/pngtree-sweet-grizzly-bear-cartoon-art-for-kids-png-image_12812227.png' },
       { key:'panda', name:'แพนด้า', imageUrl:'https://i.pinimg.com/564x/c7/30/54/c73054170fb13bbfc0db839ea8526bdf.jpg' },
       { key:'koala', name:'โคอาลา', imageUrl:'https://img.freepik.com/free-vector/cute-koala-cartoon-character_1308-132636.jpg' },
@@ -468,7 +523,7 @@
       { key:'chicken', name:'ไก่', imageUrl:'https://static.vecteezy.com/system/resources/thumbnails/044/315/179/small_2x/cartoon-of-a-chicken-hen-free-png.png' },
       { key:'penguin', name:'เพนกวิน', imageUrl:'https://png.pngtree.com/png-vector/20240429/ourmid/pngtree-happy-penguin-cute-cartoon-art-png-image_12341225.png' },
       { key:'bird', name:'นก', imageUrl:'https://t3.ftcdn.net/jpg/01/19/50/64/360_F_119506410_FPYY0xlKYmqV5B3nLr1o0XaVbi3weO5k.jpg' },
-      { key:'duck', name:'เป็ด', imageUrl:'https://toppng.com/uploads/preview/duck-11530970651bb8llewffq.png' },
+      { key:'duck', name:'เป็ด', imageUrl:'https://img.freepik.com/premium-vector/print_1126632-1731.jpg' },
       { key:'eagle', name:'นกอินทรี', imageUrl:'https://gallery.yopriceville.com/var/albums/Free-Clipart-Pictures/Birds-PNG/Eagle_PNG_PNG_Clip_Art_Image.png?m=1629783192' },
       { key:'owl', name:'นกฮูก', imageUrl:'https://img.freepik.com/free-vector/cute-owl-perched-branch_1308-165797.jpg?semt=ais_hybrid&w=740&q=80' },
       { key:'boar', name:'หมูป่า', imageUrl:'https://img.freepik.com/free-vector/friendly-cartoon-warthog-illustration_1308-165814.jpg' },
@@ -476,21 +531,19 @@
       { key:'hippo', name:'ฮิปโปโปเตมัส', imageUrl:'https://img.freepik.com/free-vector/cheerful-cartoon-hippopotamus-illustration_1308-165828.jpg?semt=ais_hybrid&w=740&q=80' },
       { key:'crocodile', name:'จระเข้', imageUrl:'https://i.pinimg.com/736x/08/41/90/0841904825819f295262cea0d191db4c.jpg' },
       { key:'turtle', name:'เต่า', imageUrl:'https://t3.ftcdn.net/jpg/02/12/04/16/360_F_212041631_IlUpamHEbdvRMmzfuXav1XORBnaIXuEf.jpg' },
-      { key:'lizard', name:'กิ้งก่า', imageUrl:'https://png.pngtree.com/png-vector/20221223/ourmid/pngtree-little-lizard-animal-ip-element-image-vector-illustration-png-image_6493752.png' },
+      { key:'lizard', name:'กิ้งก่า', imageUrl:'https://img.freepik.com/premium-vector/cute-chameleon-cartoon-white-background_188253-10024.jpg' },
       { key:'snake', name:'งู', imageUrl:'https://png.pngtree.com/png-vector/20240216/ourmid/pngtree-snake-illustration-png-image_11743292.png' },
       { key:'whale', name:'วาฬ', imageUrl:'https://t4.ftcdn.net/jpg/11/41/83/01/360_F_1141830138_wkG4bn4KRbI0tGFKLqLS1EGkmoR2Cvb5.jpg' },
       { key:'dolphin', name:'ปลาโลมา', imageUrl:'https://parspng.com/wp-content/uploads/2024/03/dolphinpng.parspng.com-4.png' },
       { key:'fish', name:'ปลา', imageUrl:'https://png.pngtree.com/png-vector/20230814/ourmid/pngtree-blue-cartoon-fish-sticker-on-a-white-background-vector-png-image_6892122.png' },
-      { key:'shark', name:'ฉลาม', imageUrl:'https://www.citypng.com/public/uploads/preview/hd-cartoon-smiling-shark-character-png-7017516948622525qd7lu90pw.png' },
+      { key:'shark', name:'ฉลาม', imageUrl:'https://img.freepik.com/premium-vector/cute-cartoon-shark-vector-illustration-isolated-white-background_1151-31435.jpg' },
       { key:'octopus', name:'ปลาหมึก', imageUrl:'https://static.vecteezy.com/system/resources/previews/038/265/329/non_2x/ai-generated-octopus-in-cartoon-style-on-transparent-background-free-png.png' },
-      { key:'butterfly', name:'ผีเสื้อ', imageUrl:'https://e7.pngegg.com/pngimages/389/48/png-clipart-pink-and-green-butterfly-butterfly-cartoon-cute-cartoon-butterfly-cartoon-character-child.png' },
+      { key:'butterfly', name:'ผีเสื้อ', imageUrl:'https://static.vecteezy.com/ti/gratis-vektor/p1/11181097-sot-rod-leende-fjaril-isolerat-pa-vit-bakgrund-rolig-insekt-for-barn-platt-tecknad-serie-vektor-illustration-vector.jpg' },
       { key:'ladybeetle', name:'เต่าทอง', imageUrl:'https://static.vecteezy.com/system/resources/thumbnails/039/657/514/small_2x/ai-generated-cartoon-of-ladybug-transparent-background-free-png.png' },
       { key:'ant', name:'มด', imageUrl:'https://parspng.com/wp-content/uploads/2024/05/antpng.parspng.com-2.png' },
       { key:'bee', name:'ผึ้ง', imageUrl:'https://img.pikbest.com/png-images/20240804/honey-bee-cartoon-character-illustration-png_10698271.png!sw800' },
-      { key:'deer', name:'กวาง', imageUrl:'https://png.pngtree.com/png-vector/20220807/ourmid/pngtree-cartoon-deer-in-the-grass-png-image_5769272.png'},
+      { key:'deer', name:'กวาง', imageUrl:'https://png.pngtree.com/png-vector/20220807/ourmid/pngtree-cartoon-deer-in-the-grass-png-image_5769272.png'}
     ];
-
-    // แผนที่ไฟล์เสียงสัตว์ (เหมือนเดิม)
     const SOUND_URLS = {
       elephant:'sound/elephant.mp3', lion:'sound/lion.mp3', tiger:'sound/tiger.mp3',
       horse:'sound/horse.mp3', cow:'sound/cow.mp3', pig:'sound/pig.mp3',
@@ -527,9 +580,7 @@
 
     function showScreen(which){ document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-'+which).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
 
-    // ==============================
-    // 🎉 ตัวช่วยเพิ่มอิโมจิ (ข้อ 1)
-    // ==============================
+    // 🎉 ตัวช่วยเพิ่มอิโมจิ
     const EMOJIS = ["🌟","🎉","🎈","🥳","🌈","✨","💫","🎯","🧠","🧩","🐾","🍀","🚀"];
     function addEmojis(text, count=2){
       const pick = [];
@@ -537,9 +588,18 @@
       return `${text} ${pick.join(" ")}`;
     }
 
-    // ==============================
-    // 🐘 เกม: เลือกภาพที่ถูกต้อง
-    // ==============================
+    // ✅ helper: ให้กล่อง summary แสดง “ชื่อเกมที่เล่น” เท่านั้น
+    function setCertSummary(gameKey){
+      const title = GAME_TITLES[gameKey] || '';
+      const el = document.getElementById(`certSummary-${gameKey}`);
+      if(el){
+        el.textContent = title;
+      }
+    }
+
+    /* ============================
+       🐘 เกม: เลือกภาพที่ถูกต้อง
+    ============================ */
     const scrFind = document.getElementById('screen-find');
     const qText = document.getElementById('qText');
     const qIndexEl = document.getElementById('qIndex');
@@ -553,15 +613,10 @@
     const certScore = document.getElementById('certScore');
     const certDate = document.getElementById('certDate');
     const playAgain = document.getElementById('playAgain');
-    const qSpeakBtn = document.getElementById('qSpeakBtn'); // ✅ ปุ่มฟังคำถาม
+    const qSpeakBtn = document.getElementById('qSpeakBtn');
 
-    let bank = [];      // คลังข้อ (30 ข้อ)
-    let quiz = [];      // เลือกมา 10 ข้อ
-    let qIdx = 0;       // 0..9
-    let score = 0;      // คะแนน
-    let selected = null;
-    let nextTimer = null;
-    let currentQuestionText = "…"; // ✅ เก็บข้อความคำถามแบบไม่เติมอิโมจิ
+    let bank = []; let quiz = []; let qIdx = 0; let score = 0; let selected = null; let nextTimer = null;
+    let currentQuestionText = "…";
 
     function buildBank(){
       bank = ANIMALS.slice(0, 30).map((ani, i) => {
@@ -599,8 +654,8 @@
     }
     function renderQuestion(){
       const q = quiz[qIdx];
-      currentQuestionText = q.ask;                     // ✅ เก็บต้นฉบับไว้สำหรับอ่าน
-      qText.textContent = addEmojis(q.ask, 2);        // ✅ แสดงพร้อมอิโมจิ
+      currentQuestionText = q.ask;
+      qText.textContent = addEmojis(q.ask, 2);
       qIndexEl.textContent = (qIdx+1);
       qBar.style.width = `${(qIdx)/10*100}%`;
       optionsEl.innerHTML = '';
@@ -673,13 +728,14 @@
       certName.textContent = name;
       certScore.textContent = `คะแนน: ${score}/10`;
       certDate.textContent = new Date().toLocaleString('th-TH', { dateStyle:'long', timeStyle:'short' });
+      setCertSummary('find');  // ✅ เปลี่ยนเป็นชื่อเกม
       finishBlock.classList.remove('hidden');
       document.getElementById('dlPdf-find').focus();
+      logResult('find','เลือกภาพที่ถูกต้อง',score);
     }
     submitBtn.addEventListener('click', submit);
     skipWaitBtn.addEventListener('click', nextQuestion);
     playAgain.addEventListener('click', startFindGame);
-    // ✅ ปุ่มฟังคำถาม
     qSpeakBtn.addEventListener('click', ()=> speakThai(currentQuestionText));
 
     // ========== ดาวน์โหลดใบประกาศ (เกม 1) ==========
@@ -707,24 +763,19 @@
       pdf.save(`ผลงาน_${name}.pdf`);
     });
 
-    // ==============================
-    // 🎨 เกม: เลือกสีที่ถูกต้อง
-    // ==============================
+    /* ============================
+       🎨 เกม: เลือกสีที่ถูกต้อง (คลิกการ์ด = ตอบทันที)
+    ============================ */
     const COLORS = [
-      {name:'สีแดง',hex:'#ef4444'},
-      {name:'สีเขียว',hex:'#22c55e'},
-      {name:'สีน้ำเงิน',hex:'#3b82f6'},
-      {name:'สีเหลือง',hex:'#eab308'},
-      {name:'สีม่วง',hex:'#a855f7'},
-      {name:'สีส้ม',hex:'#f97316'},
-      {name:'สีชมพู',hex:'#ec4899'},
-      {name:'สีฟ้า',hex:'#38bdf8'},
+      {name:'สีแดง',hex:'#ef4444'},{name:'สีเขียว',hex:'#22c55e'},{name:'สีน้ำเงิน',hex:'#3b82f6'},{name:'สีเหลือง',hex:'#eab308'},
+      {name:'สีม่วง',hex:'#a855f7'},{name:'สีส้ม',hex:'#f97316'},{name:'สีชมพู',hex:'#ec4899'},{name:'สีฟ้า',hex:'#38bdf8'}
     ];
-    const qSpeakBtnColor = document.getElementById('qSpeakBtn-color'); // ✅
-    let currentQuestionTextColor = "…"; // ✅
+    const qSpeakBtnColor = document.getElementById('qSpeakBtn-color');
+    let currentQuestionTextColor = "…";
+
     function startColorGame(){
       showScreen('color');
-      const state = { idx:0, score:0, selected:null, quiz:[] , timer:null };
+      const state = { idx:0, score:0, selected:null, quiz:[] , timer:null, locked:false };
       for(let i=0;i<10;i++){
         const ans=COLORS[Math.floor(Math.random()*COLORS.length)];
         let wrong; do{wrong=COLORS[Math.floor(Math.random()*COLORS.length)]}while(wrong===ans);
@@ -734,19 +785,22 @@
       }
       renderColor(state);
     }
+
     function renderColor(st){
       const q = st.quiz[st.idx];
-      currentQuestionTextColor = q.ask;                               // ✅ เก็บข้อความ
-      document.getElementById('qText-color').textContent = addEmojis(q.ask,2); // ✅ แสดงพร้อมอิโมจิ
+      st.locked = false;
+      currentQuestionTextColor = q.ask;
+
+      document.getElementById('qText-color').textContent = addEmojis(q.ask,2);
       document.getElementById('qIndex-color').textContent = st.idx+1;
       document.getElementById('qBar-color').style.width = `${(st.idx)/10*100}%`;
+
       const box = document.getElementById('options-color');
       box.innerHTML='';
-      st.selected=null;
-      const submit = document.getElementById('submitBtn-color');
       const skip = document.getElementById('skipWaitBtn-color');
       const fb = document.getElementById('feedback-color');
-      submit.disabled=true; skip.classList.add('hidden'); fb.textContent='';
+      skip.classList.add('hidden');
+      fb.textContent='';
 
       q.options.forEach((opt, idx)=>{
         const card=document.createElement('button');
@@ -757,45 +811,51 @@
           <div class="mark">✔</div>
         `;
         card.addEventListener('click', ()=>{
-          [...box.children].forEach(c=>c.classList.remove('selected'));
-          card.classList.add('selected'); st.selected=idx; submit.disabled=false; fb.textContent='';
-          speakThai(opt.name);
+          if(st.locked) return;
+          st.locked = true;
+
+          const correct = idx===q.correctIndex;
+          if(correct) st.score++;
+
+          [...box.children].forEach((c,i)=>{
+            const mark=c.querySelector('.mark');
+            if(i===q.correctIndex){ c.classList.add('correct'); mark.title='ถูกต้อง'; }
+            else if(i===idx){ c.classList.add('wrong'); mark.textContent='✖'; mark.title='ผิด'; }
+          });
+
+          fb.textContent = correct ? '✅ เก่งมาก! คำตอบถูกต้อง 🥳' : `❌ ยังไม่ถูกนะ คำตอบคือ “${q.correctName}” 💡`;
+          skip.classList.remove('hidden');
+
+          clearTimeout(st.timer);
+          st.timer = setTimeout(()=>nextColor(st), 5000);
         });
+
         box.appendChild(card);
       });
 
-      submit.onclick=()=>{
-        if(st.selected==null) return;
-        const correct = st.selected===q.correctIndex;
-        if(correct) st.score++;
-        [...box.children].forEach((c,i)=>{
-          const mark=c.querySelector('.mark');
-          if(i===q.correctIndex){ c.classList.add('correct'); mark.title='ถูกต้อง'; }
-          else if(i===st.selected){ c.classList.add('wrong'); mark.textContent='✖'; mark.title='ผิด'; }
-        });
-        fb.textContent = correct ? '✅ เก่งมาก! คำตอบถูกต้อง 🥳' : `❌ ยังไม่ถูกนะ คำตอบคือ “${q.correctName}” 💡`;
-        submit.disabled=true; skip.classList.remove('hidden');
-        st.timer = setTimeout(()=>nextColor(st), 5000);
-      };
       skip.onclick=()=>{ clearTimeout(st.timer); nextColor(st); };
-      document.getElementById('playAgain-color').onclick=()=> startColorGame();
-      // ✅ ปุ่มฟังคำถาม
       qSpeakBtnColor.onclick = ()=> speakThai(currentQuestionTextColor);
+      document.getElementById('playAgain-color').onclick=()=> startColorGame();
     }
+
     function nextColor(st){
       st.idx++;
       if(st.idx<10) renderColor(st);
       else finishColor(st);
     }
+
     function finishColor(st){
       document.getElementById('qBar-color').style.width='100%';
       const name = (localStorage.getItem('childName')||'น้องเก่ง');
       document.getElementById('certName-color').textContent=name;
       document.getElementById('certScore-color').textContent=`คะแนน: ${st.score}/10`;
       document.getElementById('certDate-color').textContent=new Date().toLocaleString('th-TH',{dateStyle:'long', timeStyle:'short'});
+      setCertSummary('color'); // ✅ เปลี่ยนเป็นชื่อเกม
       document.getElementById('finishBlock-color').classList.remove('hidden');
       document.getElementById('dlPdf-color').focus();
+      logResult('color','เลือกสีที่ถูกต้อง',st.score||0);
     }
+
     document.getElementById('dlJpg-color').addEventListener('click', async ()=>{
       const { dataUrl } = await captureCertificate('certificate-color');
       const a = document.createElement('a'); const name = (localStorage.getItem('childName')||'เด็กดี');
@@ -810,17 +870,18 @@
       const ratio = Math.min(pageW/canvas.width, pageH/canvas.height);
       const w = canvas.width*ratio, h = canvas.height*ratio, x=(pageW-w)/2, y=(pageH-h)/2;
       pdf.addImage(imgData, 'JPEG', x, y, w, h);
-      const name = (localStorage.getItem('childName')||'เด็กดี'); pdf.save(`ผลงาน_${name}.pdf`);
+      const name = (localStorage.getItem('childName')||'เด็กดี');
+      pdf.save(`ผลงาน_${name}.pdf`);
     });
 
-    // ==============================
-    // ❓ เกม: เลือกคำตอบที่ถูกต้อง (ตามหมวด)
-    // ==============================
+    /* ============================
+       ❓ เกม: เลือกคำตอบที่ถูกต้อง (ตามหมวด)
+    ============================ */
     const SETS = {
       water:      ['ปลา','ปลาโลมา','วาฬ','ฉลาม','ปลาหมึก','เต่า','จระเข้','เพนกวิน'],
       plantEater: ['ช้าง','วัว','ม้า','กระต่าย','แพนด้า','โคอาลา','กวาง','ลิง'],
       meatEater:  ['สิงโต','เสือ','งู','จระเข้','หมี','แรด','ฉลาม','นกอินทรี','นกฮูก','สุนัขจิ้งจอก'],
-      air:        ['นก','นกฮูก','นกอินทรี','ผีเสื้อ','ผึ้ง',],
+      air:        ['นก','นกฮูก','นกอินทรี','ผีเสื้อ','ผึ้ง'],
       land:       ['สุนัข','แมว','ลิง','กิ้งก่า','หมูป่า','แพนด้า','โคอาลา','สุนัขจิ้งจอก','แรด','หมี'],
       scary:      ['สิงโต','เสือ','งู','จระเข้','หมี','แรด','ฉลาม','ผึ้ง'],
       domestic:   ['แมว','สุนัข'],
@@ -865,7 +926,6 @@
         items.push({ ask:'อะไรเอ่ยอยู่ในป่า', correct:n, wrong });
       });
 
-      // แปลงเป็นคำถามที่มีรูป (จาก ANIMALS)
       const out = items.map(it=>{
         const correctIndex = Math.random()<0.5?0:1;
         const leftName = correctIndex===0 ? it.correct : it.wrong;
@@ -883,8 +943,8 @@
       return out.sort(()=>Math.random()-0.5).slice(0,10);
     }
 
-    const qSpeakBtnQuiz = document.getElementById('qSpeakBtn-quiz'); // ✅
-    let currentQuestionTextQuiz = "…"; // ✅
+    const qSpeakBtnQuiz = document.getElementById('qSpeakBtn-quiz');
+    let currentQuestionTextQuiz = "…";
 
     function startQuizGame(){
       showScreen('quiz');
@@ -905,8 +965,8 @@
       const skip = document.getElementById('skipWaitBtn-quiz');
       const fb = document.getElementById('feedback-quiz');
 
-      currentQuestionTextQuiz = q.ask;                       // ✅ เก็บข้อความ
-      qTextEl.textContent = addEmojis(q.ask,2);              // ✅ แสดงพร้อมอิโมจิ
+      currentQuestionTextQuiz = q.ask;
+      qTextEl.textContent = addEmojis(q.ask,2);
       qIndex.textContent = st.idx+1;
       qBar.style.width = `${(st.idx)/10*100}%`;
       options.innerHTML=''; st.selected=null; submit.disabled=true; skip.classList.add('hidden'); fb.textContent='';
@@ -989,7 +1049,6 @@
       skip.onclick=()=>{ clearTimeout(st.timer); nextQuiz(st); };
       document.getElementById('playAgain-quiz').onclick=()=> startQuizGame();
 
-      // ✅ ปุ่มฟังคำถาม
       qSpeakBtnQuiz.onclick = ()=> speakThai(currentQuestionTextQuiz);
     }
 
@@ -1008,8 +1067,10 @@
       document.getElementById('certName-quiz').textContent=name;
       document.getElementById('certScore-quiz').textContent=`คะแนน: ${st.score}/10`;
       document.getElementById('certDate-quiz').textContent=new Date().toLocaleString('th-TH',{dateStyle:'long', timeStyle:'short'});
+      setCertSummary('quiz'); // ✅ เปลี่ยนเป็นชื่อเกม
       document.getElementById('finishBlock-quiz').classList.remove('hidden');
       document.getElementById('dlPdf-quiz').focus();
+      logResult('quiz','เลือกคำตอบที่ถูกต้อง',st.score||0);
     }
 
     document.getElementById('dlJpg-quiz').addEventListener('click', async ()=>{
@@ -1029,139 +1090,107 @@
       const name = (localStorage.getItem('childName')||'เด็กดี'); pdf.save(`ผลงาน_${name}.pdf`);
     });
 
-    // ==============================
-    // 🚗 เกม: ชีวิตประจำวัน
-    // ==============================
-
+    /* ============================
+       🚗 เกม: ชีวิตประจำวัน
+    ============================ */
     const LIFE_BANK = [
-      {ask:'อะไรเอ่ยขับขี่บนท้องถนน', correct:'รถ', wrong:'เรือ'},
-      {ask:'อะไรเอ่ยมีสองล้อวิ่งบนถนน', correct:'จักรยานยนต์', wrong:'ดินสอ'},
-      {ask:'อะไรเอ่ยวิ่งบนรางในเมือง', correct:'รถไฟ', wrong:'เครื่องบิน'},
-      {ask:'อะไรเอ่ยส่งของบนถนน', correct:'รถบรรทุก', wrong:'ข้าว'},
-      {ask:'อะไรเอ่ยมีขนาดใหญ่กว่ารถจักรยานยนต์วิ่งบนท้องถนน', correct:'รถยนต์', wrong:'เรือ'},
-      {ask:'อะไรเอ่ยบินอยู่บนท้องฟ้า', correct:'เครื่องบิน', wrong:'กล้วย'},
-      {ask:'อะไรเอ่ยบินได้เหมือนนก', correct:'เฮลิคอปเตอร์', wrong:'นม'},
-      {ask:'อะไรเอ่ยลอยได้บนท้องฟ้า', correct:'ลูกโป่ง', wrong:'ผักกาด'},
-      {ask:'อะไรเอ่ยช่วยพยุงลอยฟ้า', correct:'ร่มชูชีพ', wrong:'ห่วงยาง'},
-      {ask:'อะไรเอ่ยร่มสีสวยลอยฟ้า', correct:'ร่มร่อน', wrong:'สารพิษ'},
-      {ask:'อะไรเอ่ยแล่นในน้ำ', correct:'เรือ', wrong:'น้ำแข็งใส'},
-      {ask:'อะไรเอ่ยแล่นในแม่น้ำ', correct:'เรือยนต์', wrong:'ขนมปัง'},
-      {ask:'อะไรเอ่ยอยู่ในทะเล', correct:'ปลา', wrong:'ช็อคโกแลต'},
-      {ask:'อะไรเอ่ยช่วยดำน้ำได้', correct:'เรือดำน้ำ', wrong:'เรือ'},
-      {ask:'อะไรเอ่ยลอยตัวในน้ำ', correct:'ห่วงยาง', wrong:'คน'},
-      {ask:'อะไรเอ่ยกินได้', correct:'ข้าว', wrong:'รถ'},
-      {ask:'อะไรเอ่ยกินได้ตอนเช้า', correct:'ขนมปัง', wrong:'ลูกโป่ง'},
-      {ask:'อะไรเอ่ยเป็นผลไม้', correct:'กล้วย', wrong:'ดินสอ'},
-      {ask:'อะไรเอ่ยเป็นผัก', correct:'ผักกาด', wrong:'นม'},
-      {ask:'อะไรเอ่ยเป็นของหวาน', correct:'ไอศครีม', wrong:'สารพิษ'},
-      {ask:'อะไรเอ่ยดื่มได้', correct:'นม', wrong:'สบู่'},
-      {ask:'อะไรเอ่ยกินไม่ได้', correct:'ก้อนอิฐ', wrong:'ข้าว'},
-      {ask:'อะไรเอ่ยห้ามกิน', correct:'สารพิษ', wrong:'ขนมปัง'},
-      {ask:'อะไรเอ่ยของหวานสีเข้ม', correct:'ช็อกโกแลต', wrong:'ดินสอ'},
-      {ask:'อะไรเอ่ยเย็นหวานสีสันสวย', correct:'น้ำแข็งใส', wrong:'ผักกาด'},
-      {ask:'อะไรเอ่ยเป็นมนุษย์', correct:'คุณครู', wrong:'รถ'},
-      {ask:'อะไรเอ่ยเป็นสัตว์', correct:'สุนัข', wrong:'จักรยานยนต์'},
-      {ask:'อะไรเอ่ยเดินสองขา', correct:'คน', wrong:'รถยนต์'},
-      {ask:'อะไรเอ่ยมีหาง', correct:'แมว', wrong:'คุณครู'},
-      {ask:'อะไรเอ่ยส่งเสียงเห่า', correct:'สุนัข', wrong:'แมว'},
-      {ask:'อะไรเอ่ยใช้เขียนหนังสือ', correct:'ดินสอ', wrong:'ยางลบ'},
-      {ask:'อะไรเอ่ยใช้ลบดินสอ', correct:'ยางลบ', wrong:'ดินสอ'},
-      {ask:'อะไรเอ่ยเป็นกระดาษรวมเล่ม', correct:'หนังสือ', wrong:'จาน'},
-      {ask:'อะไรเอ่ยใช้วาดรูป', correct:'สีเทียน', wrong:'แก้วน้ำ'},
-      {ask:'อะไรเอ่ยใช้ดูเวลา', correct:'นาฬิกา', wrong:'กรรไกร'},
-      {ask:'อะไรเอ่ยไว้ให้นักเรียนไปเรียนหนังสือ', correct:'โรงเรียน', wrong:'เรือ'},
-      {ask:'อะไรเอ่ยอยู่ในห้องเรียน', correct:'โต๊ะ', wrong:'ไอศครีม'},
-      {ask:'อะไรเอ่ยไว้ใช้สำหรับการนั่ง', correct:'เก้าอี้', wrong:'แก้วน้ำ'},
-      {ask:'อะไรเอ่ยเปิดไฟได้', correct:'สวิตช์ไฟ', wrong:'กล้วย'},
-      {ask:'อะไรเอ่ยไว้ใช้สำหรับการวางอาหาร', correct:'จาน', wrong:'ก้อนอิฐ'},
-      {ask:'อะไรเอ่ยป้องกันศีรษะเวลาอยู่บนมอเตอร์ไซค์', correct:'หมวกกันน็อค', wrong:'โต๊ะ'},
-      {ask:'อะไรเอ่ยใช้เป็นตัวบอกให้คนสามารถข้ามถนนได้', correct:'ทางม้าลาย', wrong:'เครื่องบิน'},
-      {ask:'อะไรเอ่ยส่งสัญญาไฟหยุดรถ', correct:'ไฟแดง', wrong:'ทางม้าลาย'},
-      {ask:'อะไรเอ่ยส่งสัญญาให้รถไปได้', correct:'ไฟเขียว', wrong:'ทางม้าลาย'},
-      {ask:'อะไรเอ่ยไว้เตือนอันตราย', correct:'สัญญาณเตือนภัย', wrong:'ทางม้าลาย'},
-      {ask:'อะไรเอ่ยลูกกลมๆกลิ้งแล้วเตะ', correct:'ลูกฟุตบอล', wrong:'คุณครู'},
-      {ask:'อะไรเอ่ยตอนตีต้องตีข้ามตาข่าย', correct:'ลูกแบดมินตัน', wrong:'คุณครู'},
-      {ask:'อะไรเอ่ยตีลงหลุม', correct:'ลูกกอล์ฟ', wrong:'คุณครู'},
-      {ask:'อะไรเอ่ยใช้ออกกำลังกายกระโดดเชือก', correct:'เชือกกระโดด', wrong:'คุณครู'},
-      {ask:'อะไรเอ่ยช่วยทำลอยตัวในน้ำ', correct:'บอร์ดโฟม', wrong:'คุณครู'},
-      {ask:'อะไรเอ่ยส่องแสงกลางวัน', correct:'ดวงอาทิตย์', wrong:'ดวงจันทร์'},
-      {ask:'อะไรเอ่ยส่องแสงกลางคืน', correct:'ดวงจันทร์', wrong:'ดวงอาทิตย์'},
-      {ask:'อะไรเอ่ยตกจากฟ้า', correct:'ฝน', wrong:'ลม'},
-      {ask:'อะไรเอ่ยพัดให้เย็น', correct:'ลม', wrong:'ฝน'},
-      {ask:'อะไรเอ่ยขึ้นจากดิน เป็นสีเขียว', correct:'หญ้า', wrong:'สบู่'},
-      {ask:'อะไรเอ่ยไว้ใส่น้ำ', correct:'แก้วน้ำ', wrong:'ช็อกโกแลต'},
-      {ask:'อะไรเอ่ยไว้ใส่ออกไปนอกบ้าน', correct:'รองเท้า', wrong:'ดวงอาทิตย์'},
-      {ask:'อะไรเอ่ยไว้ใช้ทำความสะอาดล้างมือ', correct:'สบู่', wrong:'สารพิษ'},
-      {ask:'อะไรเอ่ยบีบแล้วฟอง', correct:'ยาสระผม', wrong:'ก้อนอิฐ'},
-      {ask:'อะไรเอ่ยถือไว้กันฝนตอนฝนตก', correct:'ร่ม', wrong:'เฮลิคอปเตอร์'},
-      {ask:'อะไรเอ่ยใช้ตัดกระดาษ', correct:'กรรไกร', wrong:'คุณครู'},
-      {ask:'อะไรเอ่ยไว้ใช้เดินทางในที่สาธรารณะร่วมกับผู้อื่น', correct:'รถเมล์', wrong:'เรือดำน้ำ'},
-      {ask:'อะไรเอ่ยวิ่งแข่งในสนามวิ่ง', correct:'นักกีฬา', wrong:'แมว'},
-      {ask:'อะไรเอ่ยไว้ใช้ควบคุมทิศทางรถ', correct:'พวงมาลัยรถ', wrong:'ช็อกโกแลต'},
-      {ask:'อะไรเอ่ยไว้ใช้สำหรับทำการบ้าน', correct:'สมุด', wrong:'คุณครู'}
+      {ask:'อะไรเอ่ยไว้สำหรับขีดเขียน?', correct:'สมุด', wrong:'โทรศัพท์'},
+      {ask:'อะไรเอ่ยไว้สำหรับอ่านหาความรู้', correct:'หนังสือ', wrong:'ดินสอ'},
+      {ask:'อะไรเอ่ยเอาไว้เขียน?', correct:'ดินสอ', wrong:'โทรศัพท์'},
+      {ask:'อะไรเอ่ยเอาไว้ล้างมือให้สะอาด?', correct:'สบู่', wrong:'สมุด'},
+      {ask:'อะไรเอ่ยเอาไว้สระผม?', correct:'แชมพู', wrong:'ไม้บรรทัด'},
+      {ask:'อะไรเอ่ยเอาไว้แปรงฟัน?', correct:'แปรงฟัน', wrong:'ช้อน'},
+      {ask:'อะไรเอ่ยเป่าลมให้เย็น?', correct:'พัดลม', wrong:'ครู'},
+      {ask:'อะไรเอ่ยใส่เท้าเวลาเดิน กันไม่ให้เท้าเจ็บ?', correct:'รองเท้า', wrong:'เค้ก'},
+      {ask:'อะไรเอ่ยใส่หนังสือและสมุดไปโรงเรียน?', correct:'กระเป๋า', wrong:'ตู้เย็น'},
+      {ask:'อะไรเอ่ยเอาไว้เก็บของให้เย็น?', correct:'ตู้เย็น', wrong:'หนังสือ'},
+      {ask:'อะไรเอ่ยใช้คุยกับเพื่อน ใช้ดูการ์ตูน และหาความรู้?', correct:'โทรศัพท์', wrong:'ครู'},
+      {ask:'อะไรเอ่ยเอาไว้หนุนหัวตอนเรานอน?', correct:'หมอน', wrong:'ดินสอ'},
+      {ask:'อะไรเอ่ยเอาไว้ใส่อาหาร?', correct:'จาน', wrong:'ช้อน'},
+      {ask:'อะไรเอ่ยเอาไว้ตักข้าวกิน?', correct:'ช้อน', wrong:'ดินสอ'},
+      {ask:'อะไรเอ่ยเอาไว้วัดระยะห่าง และทำให้ขีดดินสอเส้นตรงได้?', correct:'ไม้บรรทัด', wrong:'โทรศัพท์'},
+      {ask:'อะไรเอ่ยเอาไว้ใช้กันฝนตอนฝนตก?', correct:'ร่ม', wrong:'เครื่องบิน'},
+      {ask:'อะไรเอ่ยใช้ส่องไฟในที่มืด?', correct:'ไฟฉาย', wrong:'กระเป๋า'},
+      {ask:'ใครเอ่ยคอยจับโจร?', correct:'ตำรวจ', wrong:'ครู'},
+      {ask:'ใครเอ่ยปกป้องประเทศ?', correct:'ทหาร', wrong:'ชาวนา'},
+      {ask:'ใครเอ่ยคอยรักษาคนป่วย?', correct:'หมอ', wrong:'ทหาร'},
+      {ask:'ใครเอ่ยคอยดับไฟเวลาไฟไหม้?', correct:'นักดับเพลิง', wrong:'ช่างก่อสร้าง'},
+      {ask:'ใครเอ่ยสั่งสอนนักเรียน?', correct:'ครู', wrong:'ตำรวจ'},
+      {ask:'ใครเอ่ยปลูกข้าวและนำข้าวมาให้เรากิน?', correct:'ชาวนา', wrong:'ครู'},
+      {ask:'ใครเอ่ยคอยสร้างบ้านและตึกให้พวกเรา?', correct:'ช่างก่อสร้าง', wrong:'ตำรวจ'},
+      {ask:'อะไรเอ่ยเป็นของหวาน สำหรับงานวันเกิด?', correct:'เค้ก', wrong:'ข้าว'},
+      {ask:'อะไรเอ่ยเป็นของหวาน?', correct:'อมยิ้ม', wrong:'ผัก'},
+      {ask:'อะไรเอ่ยไว้กินเป็นอาหารหลัก?', correct:'ข้าว', wrong:'ไก่ทอด'},
+      {ask:'อะไรเอ่ยเย็น ๆ หวาน ๆ กินแล้วสดชื่น?', correct:'ไอติม', wrong:'ข้าว'},
+      {ask:'อะไรเอ่ยเป็นขนมกรุบกรอบ?', correct:'ขนม', wrong:'ไอติม'},
+      {ask:'อะไรเอ่ยเป็นเครื่องดื่มจากวัว?', correct:'นม', wrong:'แครอท'},
+      {ask:'อะไรเอ่ยเป็นผักสีส้ม กรอบๆ ไว้ประกอบอาหาร', correct:'แครอท', wrong:'เค้ก'},
+      {ask:'อะไรเอ่ยใบเขียว ๆ กินแล้วแข็งแรง?', correct:'ผัก', wrong:'อมยิ้ม'},
+      {ask:'อะไรเอ่ยทอดกรอบ ๆ กินกับซอสอร่อย?', correct:'ไก่ทอด', wrong:'เค้ก'},
+      {ask:'อะไรเอ่ยทำจากแป้ง?', correct:'ขนมปัง', wrong:'ไอติม'},
+      {ask:'อะไรเอ่ยมีสองล้อ วิ่งเร็วบนถนน?', correct:'รถจักรยานยนต์', wrong:'รถยนต์'},
+      {ask:'อะไรเอ่ยมีสี่ล้อ พาเราไปเที่ยวได้?', correct:'รถยนต์', wrong:'รถจักรยานยนต์'},
+      {ask:'อะไรเอ่ยมีที่นั่งหลายแถว เหมือนรถเล็กแต่ใหญ่กว่า?', correct:'รถตู้', wrong:'รถจักรยานยนต์'},
+      {ask:'อะไรเอ่ยมีหลายที่นั่ง วิ่งรับคนเยอะๆ ?', correct:'รถบัส', wrong:'รถยนต์'},
+      {ask:'อะไรมีไว้สำหรับขับขี่ในชุมชนเหมาะสำหรับเด็กและมีสองล้อ?', correct:'จักรยาน', wrong:'รถยนต์'},
+      {ask:'อะไรเอ่ยแล่นอยู่บนทะเล สามารถขนของไปต่างประเทศได้?', correct:'เรือ', wrong:'เครื่องบิน'},
+      {ask:'อะไรเอ่ยบินบนท้องฟ้า พาเราไปต่างประเทศ?', correct:'เครื่องบิน', wrong:'เรือ'},
+      {ask:'อะไรเอ่ยบินได้ มีใบพัดหมุนอยู่ข้างบน?', correct:'เฮลิคอปเตอร์', wrong:'เครื่องบิน'},
+      {ask:'อะไรเอ่ยวิ่งอยู่บนถนน คอยรับส่งนักเรียน', correct:'รถบัส', wrong:'จักรยาน'},
     ];
 
     const LIFE_ASSETS = {
-      'รถ': 'https://img.freepik.com/free-psd/cartoon-modern-car-illustration_23-2151227157.jpg?semt=ais_hybrid&w=740&q=80',
-      'รถยนต์': 'https://www.nicepng.com/png/detail/119-1198513_car-cartoon-png-car-cartoon.png',
-      'จักรยานยนต์': 'https://img.pikbest.com/png-images/qiantu/ps-motorcycle-cartoon-cute-icon-vector_2734740.png!sw800',
-      'รถไฟ': 'https://i.pinimg.com/736x/54/69/dc/5469dce4bf8826d5b8cb3cc0e6ed9a64.jpg',
-      'รถบรรทุก': 'https://i.pinimg.com/564x/ca/82/3e/ca823e058f5be67bdd283adf48a78d03.jpg',
-      'เครื่องบิน': 'https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L2pvYjcyOC0yMTYtdi5qcGc.jpg',
-      'เฮลิคอปเตอร์': 'https://static.vecteezy.com/system/resources/previews/036/271/971/non_2x/ai-generated-helicopter-illustration-helicopter-cartoon-on-transparent-background-free-png.png',
-      'ลูกโป่ง': 'https://www.pngmart.com/files/23/Cartoon-Balloon-PNG-File.png',
-      'ร่มชูชีพ': 'https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTEwL3Jhd3BpeGVsb2ZmaWNlN18zZF9jaGFyYWN0ZXJfaWxsdXN0cmF0aW9uX2Ffd29tZW5fYWR2ZW50dXJlX3NreV9iNTNiNWVlOC1iYTg3LTQxOTAtYmRiMy0yMGRmMWFkMzBkYTIucG5n.png',
-      'ร่มร่อน': 'https://static.vecteezy.com/system/resources/thumbnails/044/620/329/small_2x/cartoon-man-with-parachute-on-transparent-background-png.png',
-      'เรือ': 'https://i.pinimg.com/736x/6d/c3/79/6dc3792181622a60cf04c512af0e78a7.jpg',
-      'เรือยนต์': 'https://static.vecteezy.com/system/resources/previews/033/251/069/non_2x/speedboat-cartoon-illustration-ai-generative-free-png.png',
-      'เรือดำน้ำ': 'https://img.freepik.com/free-vector/submarine-underwater-cartoon-vector-icon-illustration-transportation-technology-icon-isolated_138676-5585.jpg?semt=ais_hybrid&w=740&q=80',
-      'ห่วงยาง': 'https://media.istockphoto.com/id/977434634/vector/swim-ring.jpg?s=612x612&w=0&k=20&c=aJ4tDNEqv1qnJpSODf0TTux_d49Em7haOp7Qvq1_pxM=',
-      'ข้าว': 'https://img.freepik.com/premium-vector/rice-cartoon-isolated-transparent-background-png-cartoon_927498-17149.jpg',
-      'ขนมปัง': 'https://img.freepik.com/premium-vector/cartoon-vector-illustration-isolated-object-delicious-flour-food-bakery-bread-whole-grain-toast_311865-9555.jpg',
-      'กล้วย': 'https://static.vecteezy.com/system/resources/thumbnails/009/597/287/small_2x/banana-fruit-illustration-cartoon-png.png',
-      'ผักกาด': 'https://i.pinimg.com/736x/4a/2e/46/4a2e46b9e13fff263271001c87a5e0ba.jpg',
-      'ไอศครีม': 'https://www.citypng.com/public/uploads/preview/hd-four-balls-ice-cream-cone-illustration-cartoon-png-704081694798368j5r0p8siuw.png?v=2025071504',
-      'นม': 'https://img.freepik.com/premium-vector/milk-cartoon-vector-illustration-cute-milk-carton-cartoon-drawing-with-glass-milk_648083-558.jpg?w=360',
-      'ช็อกโกแลต': 'https://static.vecteezy.com/system/resources/previews/025/775/232/non_2x/chocholate-icon-cartoon-ai-generative-free-png.png',
-      'น้ำแข็งใส': 'https://thumb.ac-illust.com/de/deac3f72bab970ce251e807a3189b792_t.jpeg',
-      'ก้อนอิฐ': 'https://png.pngtree.com/png-vector/20230728/ourmid/pngtree-brick-clipart-bricks-building-construction-stock-vector-png-image_6798803.png',
-      'สารพิษ': 'https://png.pngtree.com/png-vector/20191018/ourmid/pngtree-glass-bottle-of-green-poison-icon-cartoon-style-png-image_1823054.jpg',
-      'คุณครู': 'https://i.pinimg.com/736x/cd/92/92/cd9292e01ef5aae6ee782b34535dbad8.jpg',
-      'คน': 'https://static.vecteezy.com/system/resources/previews/024/658/893/non_2x/conversational-3d-male-character-engaged-in-a-discussion-free-png.png',
-      'ดินสอ': 'https://static.vecteezy.com/system/resources/previews/045/905/724/non_2x/school-materials-clip-art-cartoon-pencil-free-png.png',
-      'ยางลบ': 'https://www.citypng.com/public/uploads/preview/clipart-cartoon-rubber-eraser-hd-png-701751694869969y9ey4bzypi.png',
-      'หนังสือ': 'https://img.freepik.com/free-vector/text-books-library-isolated-icon_24877-83372.jpg',
-      'สีเทียน': 'https://static.vecteezy.com/system/resources/previews/025/246/744/non_2x/school-materials-cartoon-crayons-free-png.png',
-      'นาฬิกา': 'https://img.pikbest.com/png-images/qiantu/hand-drawn-cartoon-alarm-clock-png-element_2735100.png!sw800',
-      'โรงเรียน': 'https://img.freepik.com/premium-photo/png-cute-school-png-architecture-building-cartoon_53876-719335.jpg',
-      'โต๊ะ': 'https://static.vecteezy.com/system/resources/previews/041/956/367/non_2x/ai-generated-desk-illustration-isolated-on-transparent-background-free-png.png',
-      'เก้าอี้': 'https://static.vecteezy.com/system/resources/previews/042/053/211/non_2x/ai-generated-wooden-chair-hand-drawn-cartoon-style-illustration-free-png.png',
-      'สวิตช์ไฟ': 'https://www.shutterstock.com/image-vector/switch-vector-icon-doodle-style-600nw-2425928239.jpg',
-      'จาน': 'https://i.pinimg.com/originals/db/5c/0c/db5c0cdc1f32b3fd6e31a5f72ea76a51.jpg',
-      'หมวกกันน็อค': 'https://www.freeiconspng.com/uploads/helmet-icon-22.jpg',
-      'ทางม้าลาย': 'https://img.pikbest.com/png-images/qiantu/hand-drawn-cartoon-traffic-safe-crossing-the-road_2723180.png!sw800',
-      'ไฟแดง': 'https://img.favpng.com/12/13/18/traffic-light-cartoon-clip-art-png-favpng-GDS97KN17D6zu3dN9EAbvdwVW.jpg',
-      'ไฟเขียว': 'https://www.nicepng.com/png/detail/92-927344_traffic-light-happy-traffic-light-green-cartoon.png',
-      'สัญญาณเตือนภัย': 'https://clipart-library.com/2023/1163898246376n0zzhsijkzeglijxbhyde0bgoeugzr2vth3i912vzfsbc93hahtyzp2gtewk8jm5ayzhrgxmbmvdbepskhhuwrlr6dolc03ni1.png',
-      'ลูกฟุตบอล': 'https://atlas-content-cdn.pixelsquid.com/stock-images/cartoon-soccer-ball-y1Mv8yA-600.jpg',
-      'ลูกแบดมินตัน': 'https://img.pikbest.com/png-images/badminton-ball-party-combination-cartoon-clipart_5882603.png!sw800',
-      'ลูกกอล์ฟ': 'https://png.pngtree.com/png-vector/20230907/ourmid/pngtree-golf-ball-with-grass-illustration-in-minimal-style-png-image_10013870.png',
-      'เชือกกระโดด': 'https://static.vecteezy.com/system/resources/previews/024/655/962/non_2x/happy-kid-boy-playing-jump-rope-isolated-free-free-png.png',
-      'ดวงอาทิตย์': 'https://gallery.yopriceville.com/downloadfullsize/send/7437',
-      'ดวงจันทร์': 'https://icon2.cleanpng.com/20240108/rub/transparent-cartoon-moon-glowing-crescent-moon-in-starry-serene-1710931834207.webp',
-      'ฝน': 'https://png.pngtree.com/png-vector/20201128/ourmid/pngtree-a-few-blue-clouds-and-rain-png-image_2478511.jpg',
-      'ลม': 'https://img.pikbest.com/png-images/qianku/hand-drawn-cartoon-wind_2395813.png!sw800',
-      'หญ้า': 'https://www.pngbie.com/assets/images/icon/Pngbie-%E0%B8%A0%E0%B8%B2%E0%B8%9E%E0%B8%9F%E0%B8%A3%E0%B8%B5-20240710222043.png',
-      'แก้วน้ำ': 'https://img.freepik.com/premium-vector/hand-drawn-glass-cartoon-vector-illustration-clipart-white-background_191095-38317.jpg',
-      'รองเท้า': 'https://img.favpng.com/3/7/6/shoes-cartoon-png-favpng-vqjcQsPTaAzwzdh6bmFXcidtj.jpg',
-      'สบู่': 'https://cerapureth.com/wp-content/uploads/2022/11/Cerapure-kid-soap.png',
-      'ยาสระผม': 'https://png.pngtree.com/png-vector/20240312/ourmid/pngtree-shampoo-cleaning-cartoon-png-image_11929621.png',
-      'ร่ม': 'https://img.freepik.com/premium-vector/umbrella-clipart-cartoon-style-vector-illustration_761413-12337.jpg',
-      'กรรไกร': 'https://img.freepik.com/premium-vector/closed-scissors-cartoon-vector-illustration-tool-cutting-handmade-needlework_893800-161.jpg',
-      'รถเมล์': 'https://img.pikbest.com/png-images/20240821/cute-happy-yellow-school-bus-cartoon-with-children-character-on-isolated-white-background_10745832.png!sw800',
-      'นักกีฬา': 'https://img.favpng.com/22/0/11/cartoon-sport-athlete-clip-art-png-favpng-3aJKinXx5u60VZzdXBxM4bhsD.jpg',
-      'พวงมาลัยรถ': 'https://thumbnail.imgbin.com/4/1/2/cartoon-driver-cartoon-character-driving-a-car-N6aaGuE2_t.jpg',
-      'สมุด': 'https://media.istockphoto.com/id/1557600935/vector/green-notebook-and-pen-top-view.jpg?s=612x612&w=0&k=20&c=RqvN3A-mkaccXqLBvMbyyyWb7siZjXjXDDWUgemD_Sg='
+      'สมุด': 'https://img.freepik.com/premium-vector/hand-drawn-book-cartoon-illustration-isolated-white-background_921039-24019.jpg',
+      'หนังสือ': 'https://img.pikbest.com/png-images/qianku/cartoon-white-book-information-free-button_2049323.png!sw800',
+      'ดินสอ': 'https://img.pikbest.com/png-images/qianku/cartoon-stationery-pencilpng_2144837.png!sw800',
+      'สบู่': 'https://img.freepik.com/premium-vector/cartoon-soap-character-fighting-with-virus-isolated-white-background-vector-illustration_230920-1968.jpg',
+      'แชมพู': 'https://img.pikbest.com/png-images/qiantu/hand-drawn-cartoon-shampoo-png-element_2734239.png!sw800',
+      'แปรงฟัน': 'https://img.freepik.com/free-vector/happy-cleaning-big-tooth-with-toothbrush-white-background_1308-104155.jpg',
+      'พัดลม': 'https://png.pngtree.com/png-clipart/20190116/ourlarge/pngtree-blue-fan-beautiful-fan-hand-painted-fan-cartoon-fan-png-image_404767.jpg',
+      'รองเท้า': 'https://img.freepik.com/premium-vector/hand-drawn-summer-shoes-cartoon-vector-illustration-clipart-white-background_191095-38923.jpg',
+      'กระเป๋า': 'https://img.freepik.com/premium-vector/red-school-bag-white-background-cartoon-vector-illustration_1324825-14520.jpg',
+      'ตู้เย็น': 'https://img.freepik.com/premium-photo/cartoon-style-refrigerated-white-backgroun_862994-418221.jpg',
+      'โทรศัพท์': 'https://www.j9phone.com/images/content/original-1694597486578.png',
+      'หมอน': 'https://png.pngtree.com/png-vector/20191213/ourmid/pngtree-cute-pillow-illustration-vector-on-white-background-png-image_2073938.jpg',
+      'จาน': 'https://img.freepik.com/premium-photo/blue-plate-isolated-white-background-cartoon-illustration_899449-75236.jpg',
+      'ช้อน': 'https://img.freepik.com/premium-photo/slotted-spoon-2d-cartoon-illustraton-white-background-h_889056-37283.jpg',
+      'ไม้บรรทัด': 'https://img.freepik.com/premium-vector/cartoon-ruler-set-against-white-backdrop_579306-7004.jpg',
+      'ร่ม': 'https://img.freepik.com/premium-vector/umbrella-cartoon-vector-illustration-white-background_1293239-12526.jpg',
+      'ไฟฉาย': 'https://i.pinimg.com/474x/d8/cd/f4/d8cdf44e6416d35128ef1d2ff39723b7.jpg',
+      'กรรไกร': 'https://i.pinimg.com/736x/8b/55/1c/8b551c86ac4604035fb40c761872b820.jpg',
+      'แก้วน้ำ': 'https://media.istockphoto.com/id/524535335/th/%E0%B9%80%E0%B8%A7%E0%B8%84%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/%E0%B9%81%E0%B8%81%E0%B9%89%E0%B8%A7%E0%B8%99%E0%B9%89%E0%B9%8D%E0%B8%B2%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%95%E0%B8%B9%E0%B8%99.jpg?s=612x612&w=0&k=20&c=a3WdRqHeGLrN5iGGg43Sm25XmZThQktl13WEzH4jwj8=',
+
+      /* ประเภทอาชีพ */
+      'ตำรวจ': 'https://img.freepik.com/premium-photo/police-officer-2d-cartoon-illustraton-white-background_889056-38212.jpg',
+      'ทหาร': 'https://img.freepik.com/premium-photo/army-action-cartoon-soldier-white-background_41969-39116.jpg',
+      'หมอ': 'https://img.freepik.com/premium-vector/cute-girl-doctor-cartoon-white-background-cute-female-doctor-character-illustration_1249867-5074.jpg',
+      'นักดับเพลิง': 'https://img.freepik.com/premium-photo/happy-fireman-cartoon-white-background_1106493-72101.jpg',
+      'ครู': 'https://img.freepik.com/premium-photo/funny-3d-teacher-character-with-blackboard-white-background_407474-27666.jpg',
+      'ชาวนา': 'https://img.freepik.com/premium-vector/farmer-cartoon-character-white-background_1639-29226.jpg',
+      'ช่างก่อสร้าง': 'https://www.shutterstock.com/image-vector/classic-worker-carpenter-vector-civil-600nw-2485309197.jpg',
+
+      /* ประเภทอาหาร */
+      'เค้ก': 'https://i.pinimg.com/1200x/03/c8/5a/03c85a7041cbb5a96b6d0c88cb41f347.jpg',
+      'อมยิ้ม': 'https://img.freepik.com/premium-vector/cute-kawaiistyle-lollipop-candy-illustration-with-stars-happy-face-sweet-designs_1465813-1.jpg',
+      'ข้าว': 'https://img.freepik.com/premium-vector/cute-rice-cartoon-rice-bowl-white-background-vector_1322206-12491.jpg',
+      'ไอติม': 'https://img.freepik.com/premium-vector/ice-cream-cartoon-set_738849-1023.jpg',
+      'ขนม': 'https://s.isanook.com/ca/0/ud/283/1416539/untitled-1.jpg?ip/resize/w728/q80/jpg',
+      'นม': 'https://img.freepik.com/premium-vector/cute-colorful-milk-packaging-different-flavors_185694-651.jpg',
+      'แครอท': 'https://img.freepik.com/premium-vector/cute-carrot-cartoon-character-illustration-white-background_1023984-4117.jpg',
+      'ผัก': 'https://img.freepik.com/premium-psd/fresh-vegetables-cartoon-isolated-transparent-png-hd-free-stock-illustration-white-background_1178789-4000.jpg',
+      'ไก่ทอด': 'https://img.pikbest.com/png-images/qiantu/hand-drawn-gourmet-delicious-fried-chicken-drumstick-cartoon-elements_2737998.png!sw800',
+      'ขนมปัง': 'https://img.freepik.com/premium-vector/sandwich-cartoon-character-clipart-vector-illustration_1280610-1176.jpg',
+      'เฟรนฟราย': 'https://st2.depositphotos.com/1354412/8885/v/450/depositphotos_88855744-stock-illustration-french-fries-cartoon-character.jpg',
+
+      /* ประเภทยานพาหนะ */
+      'รถจักรยานยนต์': 'https://img.freepik.com/premium-photo/sport-racing-motorbike-cartoon-icon-illustration_1240525-72697.jpg?w=360',
+      'รถยนต์': 'https://img.freepik.com/premium-vector/cute-cartoon-car-illustration-isolated-white-background_1174662-3882.jpg',
+      'จักรยาน': 'https://media.istockphoto.com/id/852005136/th/%E0%B9%80%E0%B8%A7%E0%B8%84%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%95%E0%B8%B9%E0%B8%99%E0%B8%88%E0%B8%B1%E0%B8%81%E0%B8%A3%E0%B8%A2%E0%B8%B2%E0%B8%99.jpg?s=170667a&w=0&k=20&c=gMhycXnsAAz1WWZeGHvIZTIHjdle7MmUx2NUg3Hf7VI=',
+      'เรือ': 'https://img.freepik.com/premium-vector/sailboat-cartoon-sticker-clip-art-vector-design-with-white-background_579306-13693.jpg',
+      'เครื่องบิน': 'https://i.pinimg.com/1200x/1e/7c/dd/1e7cdd9df0fef8fd78be0b33aa7d50fc.jpg',
+      'เฮลิคอปเตอร์': 'https://img.freepik.com/premium-photo/cartoon-military-helicopter-white-background_308643-1212.jpg',
+      'รถบัส': 'https://i.pinimg.com/736x/25/13/dc/2513dcce7c76fa38fb89b9403511b7d0.jpg',
+      'รถตู้': 'https://img.freepik.com/premium-vector/isolated-cartoon-van-vehicle-illustration-transportation-themes_1263357-23999.jpg'
     };
 
     function lifeOptionToObj(name){
@@ -1175,8 +1204,8 @@
       return { name, textOnly:true };
     }
 
-    const qSpeakBtnLife = document.getElementById('qSpeakBtn-life'); // ✅
-    let currentQuestionTextLife = "…"; // ✅
+    const qSpeakBtnLife = document.getElementById('qSpeakBtn-life');
+    let currentQuestionTextLife = "…";
 
     function startLifeGame(){
       showScreen('life');
@@ -1209,8 +1238,8 @@
       const skip = document.getElementById('skipWaitBtn-life');
       const fb = document.getElementById('feedback-life');
 
-      currentQuestionTextLife = q.ask;                    // ✅
-      qTextEl.textContent = addEmojis(q.ask,2);           // ✅
+      currentQuestionTextLife = q.ask;
+      qTextEl.textContent = addEmojis(q.ask,2);
       qIndex.textContent = st.idx+1;
       qBar.style.width = `${(st.idx)/10*100}%`;
       options.innerHTML=''; st.selected=null; submit.disabled=true; skip.classList.add('hidden'); fb.textContent='';
@@ -1238,7 +1267,8 @@
           if(e.target && e.target.classList.contains('sound-btn')) return;
           [...options.children].forEach(c=>c.classList.remove('selected'));
           card.classList.add('selected'); st.selected=idx; submit.disabled=false; fb.textContent='';
-          speakThai(opt.name);
+          // ให้มีเสียงอ่านชื่อสิ่งของเวลาคลิก
+          if(opt.key) playAnimalSound(opt.key); else speakThai(opt.name);
         });
 
         const imgEl = card.querySelector('.opt-img');
@@ -1262,19 +1292,22 @@
         if(st.selected==null) return;
         const correct = st.selected===q.correctIndex;
         if(correct) st.score++;
+
         [...options.children].forEach((c,i)=>{
           const mark=c.querySelector('.mark');
           if(i===q.correctIndex){ c.classList.add('correct'); mark.title='ถูกต้อง'; }
           else if(i===st.selected){ c.classList.add('wrong'); mark.textContent='✖'; mark.title='ผิด'; }
         });
+
         fb.textContent = correct ? '✅ เก่งมาก! คำตอบถูกต้อง 🥳' : `❌ ยังไม่ถูกนะ คำตอบคือ “${q.correctName}” 💡`;
         submit.disabled=true; skip.classList.remove('hidden');
+
+        clearTimeout(st.timer);
         st.timer=setTimeout(()=>nextLife(st),5000);
       };
+
       skip.onclick=()=>{ clearTimeout(st.timer); nextLife(st); };
       document.getElementById('playAgain-life').onclick=()=> startLifeGame();
-
-      // ✅ ปุ่มฟังคำถาม
       qSpeakBtnLife.onclick = ()=> speakThai(currentQuestionTextLife);
     }
 
@@ -1283,25 +1316,28 @@
       if(st.idx<10) renderLife(st);
       else finishLife(st);
     }
+
     function finishLife(st){
-            document.getElementById('qBar-life').style.width='100%';
+      document.getElementById('qBar-life').style.width='100%';
       const name=(localStorage.getItem('childName')||'น้องเก่ง');
       document.getElementById('certName-life').textContent=name;
       document.getElementById('certScore-life').textContent=`คะแนน: ${st.score}/10`;
       document.getElementById('certDate-life').textContent=new Date().toLocaleString('th-TH',{dateStyle:'long', timeStyle:'short'});
+      setCertSummary('life');   /* ✅ ให้แสดงชื่อเกมที่เล่น */
       document.getElementById('finishBlock-life').classList.remove('hidden');
       document.getElementById('dlPdf-life').focus();
+      logResult('life','ชีวิตประจำวัน',st.score||0);
     }
 
     // ========== ดาวน์โหลดใบประกาศ (เกม ชีวิตประจำวัน) ==========
     document.getElementById('dlJpg-life').addEventListener('click', async ()=>{
       const { dataUrl } = await captureCertificate('certificate-life');
-      const a = document.createElement('a'); 
+      const a = document.createElement('a');
       const name = (localStorage.getItem('childName')||'เด็กดี');
-      a.href = dataUrl; 
-      a.download = `ผลงาน_${name}.jpg`; 
-      document.body.appendChild(a); 
-      a.click(); 
+      a.href = dataUrl;
+      a.download = `ผลงาน_${name}.jpg`;
+      document.body.appendChild(a);
+      a.click();
       a.remove();
     });
 
@@ -1314,23 +1350,21 @@
       const ratio = Math.min(pageW/canvas.width, pageH/canvas.height);
       const w = canvas.width*ratio, h = canvas.height*ratio, x=(pageW-w)/2, y=(pageH-h)/2;
       pdf.addImage(imgData, 'JPEG', x, y, w, h);
-      const name = (localStorage.getItem('childName')||'เด็กดี'); 
+      const name = (localStorage.getItem('childName')||'เด็กดี');
       pdf.save(`ผลงาน_${name}.pdf`);
     });
 
     // ==============================
-    // 💾 จัดการชื่อเด็ก (บันทึก/โหลดอัตโนมัติ)
+    // 💾 จัดการ “ชื่อเด็ก”
     // ==============================
     const nameInput = document.getElementById('childName');
     const saveNameBtn = document.getElementById('saveNameBtn');
 
-    // โหลดชื่อที่เคยบันทึกไว้
     (function preloadName(){
       const saved = localStorage.getItem('childName') || '';
       if(saved){ nameInput.value = saved; }
     })();
 
-    // บันทึกชื่อเมื่อกดปุ่ม
     saveNameBtn.addEventListener('click', ()=>{
       const v = (nameInput.value || '').trim();
       if(!v){ alert('พิมพ์ชื่อก่อนนะครับ 😊'); return; }
@@ -1340,12 +1374,11 @@
       setTimeout(()=> saveNameBtn.textContent='บันทึก', 1200);
     });
 
-    // บันทึกเมื่อกด Enter ในช่องชื่อ
     nameInput.addEventListener('keydown', (e)=>{
       if(e.key==='Enter'){ saveNameBtn.click(); }
     });
 
-    // โหลดหน้าแรกเสมอเมื่อเริ่ม (กันสกรอลล์ค้าง)
+    // เปิดหน้าแรกเป็นค่าเริ่มต้น
     document.addEventListener('DOMContentLoaded', ()=> { showScreen('home'); });
   </script>
 </body>
