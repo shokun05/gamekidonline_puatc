@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>kid game online puatc✨🎈</title>
   <meta name="description" content="เว็บเล่นเกมสำหรับเด็กอนุบาล: ภาพใหญ่ กดง่าย สีสบายตา พร้อมบันทึกผลงานเป็น PDF/JPG" />
-
-  <!-- ไลบรารีสำหรับบันทึกผลงานเป็น PDF/JPG (ฝั่งผู้ใช้) -->
   <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
   <style>
     :root{
@@ -35,7 +34,11 @@
       position:sticky; top:0; z-index:20; backdrop-filter: blur(6px);
       background:rgba(247,251,255,.85); border-bottom:1px solid #e5e7eb;
     }
-    .container{max-width:1200px; margin:0 auto; padding:16px;}
+    .container{
+      max-width: min(1920px, 98vw);
+      margin: 0 auto;
+      padding: clamp(10px, 2.2vw, 18px);
+    }
     .topbar{display:flex; align-items:center; gap:12px; justify-content:space-between}
     .brand{display:flex; align-items:center; gap:10px}
     .logo{width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,var(--brand),#7c3aed); box-shadow:var(--shadow); object-fit:cover}
@@ -54,32 +57,50 @@
     .btn.next-big{ padding:18px 26px; font-size:20px; border-radius:22px; }
     .btn.tts{ background:#22c55e; }
     .btn.tts.ghost{ background:var(--card); border:2px dashed #86efac; color:#065f46; }
-
-    .games-grid{ display:grid; gap:14px; grid-template-columns: repeat(2, minmax(140px,1fr)); }
-    @media (min-width:600px){ .games-grid{ grid-template-columns: repeat(3, minmax(160px,1fr)); } }
-    @media (min-width:900px){ .games-grid{ grid-template-columns: repeat(5, minmax(180px,1fr)); } }
-
+    body{
+      background: url("https://png.pngtree.com/thumb_back/fh260/background/20211217/pngtree-large-background-material-picture-download-desktop-wallpaper-image_922833.jpg") center/cover fixed no-repeat;
+    }
+    body::before{
+      content:""; position:fixed; inset:0; background:rgba(255,255,255,.72); z-index:-1;
+    }
+    .games-grid{
+    --gap: clamp(12px, 1.4vw, 18px);
+    display: grid;
+    gap: var(--gap);
+    margin-inline: auto;
+    }
+    @media (max-width: 699px){
+    .games-grid{ grid-template-columns: repeat(2, minmax(140px,1fr)); }
+    }
+    @media (min-width:700px) and (max-width: 1099px){
+    .games-grid{ grid-template-columns: repeat(4, minmax(160px,1fr)); }
+    }
+    @media (min-width:1100px){
+    .games-grid{ grid-template-columns: repeat(6, minmax(0,1fr)); }
+    }
+    @media (min-width:1100px){
+    .games-grid.centered{
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      max-width: calc(6 * 220px + 5 * var(--gap));
+      justify-content: center;
+    }
+    }
     .game-card{ display:block; background:var(--card); border-radius:22px; overflow:hidden; text-decoration:none; color:inherit; box-shadow:var(--shadow); border:1px solid #eef2f7; }
     .game-thumb{ aspect-ratio: 16/12; display:flex; align-items:center; justify-content:center; font-size:76px; }
     .game-card img{width:100%; height:100%; object-fit:contain; padding:12px}
     .game-meta{padding:12px 14px;}
     .game-title{font-size:18px; font-weight:800; margin:0 0 6px}
     .game-desc{margin:0; color:var(--soft-ink); font-size:14px}
-
     .screen{display:none}
     .screen.active{display:block}
     .game-wrap{background:var(--card); border-radius:26px; padding:16px; box-shadow:var(--shadow); border:1px solid #eef2f7}
-
     .crumbs{display:flex; align-items:center; gap:10px; margin-bottom:10px}
     .crumbs a{color:#2563eb; text-decoration:none; font-weight:700}
-
     .progress{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:10px 0 18px; }
     .bar{flex:1; height:14px; background:#e5e7eb; border-radius:999px; overflow:hidden}
     .bar > span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--brand),#06b6d4);}
-
     .question{font-size:26px; font-weight:900; margin:6px 0 8px}
     .q-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:6px 0 14px; }
-
     .options{display:grid; grid-template-columns:1fr 1fr; gap:14px}
     .option{
       position:relative; border:4px solid transparent; border-radius:24px; background:#f9fafb; cursor:pointer; overflow:hidden; user-select:none; outline:none;
@@ -91,7 +112,6 @@
     .option footer{display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:white;}
     .option .name{font-size:18px; font-weight:800}
     .sound-btn{border:0; background:#10b981; color:white; font-weight:800; padding:10px 12px; border-radius:12px; cursor:pointer}
-
     .mark{
       position:absolute; inset:auto 8px 8px auto; width:56px; height:56px; border-radius:50%; display:none; align-items:center; justify-content:center;
       background:white; box-shadow:var(--shadow); border:4px solid var(--correct); color:var(--correct); font-size:30px; font-weight:900;
@@ -100,63 +120,33 @@
     .option.wrong .mark{ display:flex; border-color:var(--wrong); color:var(--wrong) }
 
     .actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
-
-    /* ===== ปรับปุ่ม "ส่งคำตอบ" ให้ใหญ่ กว้าง และอยู่กลางทุกเกม ===== */
     #screen-find .actions,
     #screen-color .actions,
     #screen-quiz .actions,
-    #screen-life .actions{
-      justify-content: center;
-      gap: 14px;
+    #screen-life .actions{ justify-content: center; gap: 14px; }
+    #submitBtn,#submitBtn-color,#submitBtn-quiz,#submitBtn-life{
+      font-size:22px; padding:18px 28px; border-radius:26px; min-width:280px; width:clamp(260px,42vw,460px); height:64px; box-shadow:var(--shadow);
     }
-    #submitBtn,
-    #submitBtn-color,
-    #submitBtn-quiz,
-    #submitBtn-life{
-      font-size:22px;
-      padding:18px 28px;
-      border-radius:26px;
-      min-width:280px;
-      width:clamp(260px,42vw,460px);
-      height:64px;
-      box-shadow:var(--shadow);
-    }
-    #submitBtn[disabled],
-    #submitBtn-color[disabled],
-    #submitBtn-quiz[disabled],
-    #submitBtn-life[disabled]{ opacity:.55; cursor:not-allowed; }
+    #submitBtn[disabled],#submitBtn-color[disabled],#submitBtn-quiz[disabled],#submitBtn-life[disabled]{ opacity:.55; cursor:not-allowed; }
     @media (max-width:520px){
-      #submitBtn,
-      #submitBtn-color,
-      #submitBtn-quiz,
-      #submitBtn-life{
-        width:100%; min-width:0;
-      }
+      #submitBtn,#submitBtn-color,#submitBtn-quiz,#submitBtn-life{ width:100%; min-width:0; }
     }
-
     .result{ margin-top:18px; padding:16px; border-radius:22px; background:linear-gradient(180deg,#f0f9ff,#ccfbf1); border:1px solid #bae6fd; box-shadow:var(--shadow); }
-
     .certificate{
       width: 100%; max-width: 900px; margin: 0 auto; background:white; border-radius:30px; box-shadow:var(--shadow);
-      padding:28px; border:6px solid --accent; text-align:center;
+      padding:28px; border:6px solid var(--accent); text-align:center;
     }
     .certificate h3{font-size:28px; margin:0 0 12px}
     .certificate .name{font-size:34px; font-weight:900}
     .certificate .score{font-size:22px; margin-top:6px}
     .certificate .summary{font-size:20px; margin-top:10px; color:#065f46; background:#ecfeff; display:inline-block; padding:8px 14px; border-radius:12px; border:1px dashed #99f6e4}
     .cert-row{display:flex; justify-content:center; gap:18px; flex-wrap:wrap; margin-top:16px}
-
     .muted{color:var(--soft-ink)}
     .hidden{display:none !important}
-
     .color-box{width:100%; aspect-ratio:1/1;}
     .option.color .name{font-size:20px}
-
     .emoji-title::after{ content:"  🎉🌈🎯"; }
-
     .review-btn{ border-style:dashed; border-color:#fde68a; }
-
-    /* Toast เล็กๆ สำหรับแจ้งผลบันทึก */
     .toast{
       position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
       background:#0ea5e9; color:#fff; padding:10px 14px; border-radius:12px; box-shadow:var(--shadow);
@@ -164,9 +154,18 @@
     }
     .toast.error{ background:#ef4444; }
     .toast.show{ display:block; }
-
-    /* ซ่อนปุ่มส่งคำตอบของเกมเลือกสี (คลิกการ์ด = ตอบทันที) */
     #submitBtn-color { display: none !important; }
+    #screen-home .emoji-title,
+    #screen-home .muted{ text-align:center; }
+    .section-analytics{ margin-top:40px; padding:22px; border-radius:26px; background:var(--card); box-shadow:var(--shadow); border:1px solid #eef2f7; }
+    .analytics-row{ display:grid; gap:18px; grid-template-columns: 1fr; }
+    @media (min-width:980px){ .analytics-row{ grid-template-columns: minmax(420px, 52%) 1fr; } }
+    .chart-box{ padding-left: clamp(6px, 2vw, 24px); }
+    .tabbar{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px}
+    .tabbar .tab{ border:0; background:#e5efff; color:#1e3a8a; font-weight:800; padding:10px 14px; border-radius:14px; cursor:pointer; box-shadow:var(--shadow); }
+    .tabbar .tab.active{ background:var(--brand); color:#fff }
+    .reveal{ opacity:0; transform:translateY(24px); transition: all .7s ease; }
+    .reveal.show{ opacity:1; transform:none; }
   </style>
 </head>
 <body>
@@ -188,14 +187,34 @@
   </header>
 
   <main class="container">
-    <!-- ====== หน้ารวมเกม ====== -->
     <section id="screen-home" class="screen active" aria-label="หน้าเลือกเกม">
       <h2 class="emoji-title" style="margin:10px 0 14px">เลือกเกมที่อยากเล่น</h2>
       <div class="games-grid" id="gamesGrid"></div>
       <p class="muted" style="margin-top:10px">เลือกเล่นเกมได้เต็มที่เลยครับ!!! 🎮💥</p>
     </section>
-
-    <!-- ====== เกม: เลือกภาพที่ถูกต้อง ====== -->
+    <section id="pie-section" class="section-analytics reveal hidden" aria-label="สถิติแบบวงกลม">
+      <h2 style="text-align:center;margin:0 0 12px">จำนวนเด็กที่เข้าเล่น</h2>
+      <div class="analytics-row">
+        <div class="chart-box">
+          <canvas id="pieChart" height="320"></canvas>
+          <p class="muted" id="pieCaption" style="text-align:center;margin-top:8px"></p>
+        </div>
+        <div>
+          <div style="font-size:26px; font-weight:800; margin:6px 0 10px">จากผลสำรวจพบว่า</div>
+          <div id="pieRightText" style="line-height:1.85; font-size:22px"></div>
+        </div>
+      </div>
+    </section>
+    <section id="bar-section" class="section-analytics reveal hidden" aria-label="สถิติแบบแท่ง">
+      <div class="tabbar" id="gameTabs"></div>
+      <div class="analytics-row">
+        <div class="chart-box">
+          <canvas id="barChart" height="330"></canvas>
+          <p class="muted" style="text-align:center;margin-top:8px">แกนนอน = คะแนน (1–10) • แกนตั้ง = จำนวนคน</p>
+        </div>
+        <div id="barRightText" style="font-size:18px; line-height:1.75"></div>
+      </div>
+    </section>
     <section id="screen-find" class="screen" aria-label="เกมเลือกภาพที่ถูกต้อง">
       <nav class="crumbs">
         <a href="#" class="backHome">← กลับหน้าแรก</a>
@@ -211,9 +230,9 @@
         <div class="options"></div>
         <div class="actions">
           <button class="btn" id="submitBtn" disabled>ส่งคำตอบ ✅</button>
-          <button class="btn ghost next-big hidden" id="skipWaitBtn">👉 ถัดไปทันที</button>
+          <button class="btn ghost next-big hidden" id="skipWaitBtn" role="status">👉 ถัดไปทันที</button>
         </div>
-        <div id="feedback" class="muted" style="margin-top:6px"></div>
+        <div id="feedback" class="muted" style="margin-top:6px" aria-live="polite"></div>
         <div id="finishBlock" class="result hidden">
           <div class="certificate" id="certificate-find">
             <h3>🎉 เก่งมากเลย! 🏅</h3>
@@ -234,8 +253,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ====== เกม: เลือกสีที่ถูกต้อง ====== -->
     <section id="screen-color" class="screen" aria-label="เกมเลือกสีที่ถูกต้อง">
       <nav class="crumbs">
         <a href="#" class="backHome">← กลับหน้าแรก</a>
@@ -251,9 +268,9 @@
         <div class="options" id="options-color"></div>
         <div class="actions">
           <button class="btn" id="submitBtn-color" disabled>ส่งคำตอบ ✅</button>
-          <button class="btn ghost next-big hidden" id="skipWaitBtn-color">👉 ถัดไปทันที</button>
+          <button class="btn ghost next-big hidden" id="skipWaitBtn-color" role="status">👉 ถัดไปทันที</button>
         </div>
-        <div id="feedback-color" class="muted" style="margin-top:6px"></div>
+        <div id="feedback-color" class="muted" style="margin-top:6px" aria-live="polite"></div>
         <div id="finishBlock-color" class="result hidden">
           <div class="certificate" id="certificate-color">
             <h3>🎉 เก่งมากเลย! 🎨</h3>
@@ -274,8 +291,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ====== เกม: เลือกคำตอบที่ถูกต้อง ====== -->
     <section id="screen-quiz" class="screen" aria-label="เกมเลือกคำตอบที่ถูกต้อง">
       <nav class="crumbs">
         <a href="#" class="backHome">← กลับหน้าแรก</a>
@@ -291,9 +306,9 @@
         <div class="options" id="options-quiz"></div>
         <div class="actions">
           <button class="btn" id="submitBtn-quiz" disabled>ส่งคำตอบ ✅</button>
-          <button class="btn ghost next-big hidden" id="skipWaitBtn-quiz">👉 ถัดไปทันที</button>
+          <button class="btn ghost next-big hidden" id="skipWaitBtn-quiz" role="status">👉 ถัดไปทันที</button>
         </div>
-        <div id="feedback-quiz" class="muted" style="margin-top:6px"></div>
+        <div id="feedback-quiz" class="muted" style="margin-top:6px" aria-live="polite"></div>
         <div id="finishBlock-quiz" class="result hidden">
           <div class="certificate" id="certificate-quiz">
             <h3>🎉 เก่งมากเลย! ❓🌿</h3>
@@ -314,8 +329,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ====== เกม: ชีวิตประจำวัน ====== -->
     <section id="screen-life" class="screen" aria-label="เกมชีวิตประจำวัน">
       <nav class="crumbs">
         <a href="#" class="backHome">← กลับหน้าแรก</a>
@@ -331,9 +344,9 @@
         <div class="options" id="options-life"></div>
         <div class="actions">
           <button class="btn" id="submitBtn-life" disabled>ส่งคำตอบ ✅</button>
-          <button class="btn ghost next-big hidden" id="skipWaitBtn-life">👉 ถัดไปทันที</button>
+          <button class="btn ghost next-big hidden" id="skipWaitBtn-life" role="status">👉 ถัดไปทันที</button>
         </div>
-        <div id="feedback-life" class="muted" style="margin-top:6px"></div>
+        <div id="feedback-life" class="muted" style="margin-top:6px" aria-live="polite"></div>
         <div id="finishBlock-life" class="result hidden">
           <div class="certificate" id="certificate-life">
             <h3>🎉 เก่งมากเลย! 🚗🍎</h3>
@@ -355,13 +368,8 @@
       </div>
     </section>
   </main>
-
-  <!-- Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite">กำลังบันทึก...</div>
 
-  <!-- =========================
-       ⚙️ เชื่อม Apps Script (POST JSON) + fallback no-cors
-  ========================== -->
   <script>
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycf-ljCvqv_FcDsQTK_Mo0rzUVHWN_xq0z4lEJ9WKn_RGXseDrt1avHm4BbQduvGYJ/exec';
 
@@ -385,7 +393,6 @@
         throw err;
       }
     }
-
     async function logResult(gameId, gameTitle, score){
       const payload = {
         name: (localStorage.getItem('childName')||'น้องเก่ง').trim(),
@@ -431,13 +438,7 @@
     }
   </script>
 
-  <!-- =========================
-       🔽 สคริปต์เกม + เกียรติบัตร
-  ========================== -->
   <script>
-    // ==========================
-    // 🔧 หน้าแรก
-    // ==========================
     const games = [
       { id: 'find',  title: 'เลือกภาพที่ถูกต้อง 🐾', desc: 'ลองเล่นดูสิครับสนุกแน่นอน 🎉', icon: '1.png' },
       { id: 'color', title: 'เลือกสีที่ถูกต้อง 🌈',  desc: 'ลองเล่นดูสิครับสนุกแน่นอน 🎨', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f308.svg' },
@@ -466,25 +467,33 @@
       a.addEventListener('click', (e)=>{ e.preventDefault(); openGame(g.id); });
       gamesGrid.appendChild(a);
     });
-
+    function syncGamesGridCentering(){
+      const count = gamesGrid.children.length;
+      gamesGrid.classList.toggle('centered', count < 6);
+    }
+    syncGamesGridCentering();
     const backHomeLinks = document.querySelectorAll('.backHome');
     backHomeLinks.forEach(el => el.addEventListener('click', (e)=>{ e.preventDefault(); showScreen('home'); }));
-
-    function showScreen(which){
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('screen-'+which).classList.add('active');
-      window.scrollTo({top:0,behavior:'smooth'});
+    const analyticsEls = [
+    document.getElementById('pie-section'),
+    document.getElementById('bar-section')
+    ];
+    function setAnalyticsVisible(visible){
+    analyticsEls.forEach(el => el.classList.toggle('hidden', !visible));
     }
+    function showScreen(which){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-'+which).classList.add('active');
+    setAnalyticsVisible(which === 'home');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+setAnalyticsVisible(true);
     function openGame(id){
       if(id==='find')  startFindGame();
       if(id==='color') startColorGame();
       if(id==='quiz')  startQuizGame();
       if(id==='life')  startLifeGame();
     }
-
-    // ==============================
-    // 🔊 เสียงพูด
-    // ==============================
     function speakThai(text){
       try{
         const u = new SpeechSynthesisUtterance(text);
@@ -498,12 +507,8 @@
       }catch(err){ console.warn('speech failed', err); }
     }
     window.speechSynthesis && (speechSynthesis.onvoiceschanged = ()=>{});
-
-    // 🎵 เครื่องเล่นเสียงสัตว์
     const audioPlayer = new Audio();
     audioPlayer.preload = 'auto';
-
-    // ✅ รายชื่อสัตว์ + ภาพ
     const ANIMALS = [
       { key:'elephant', name:'ช้าง', imageUrl:'https://pngfile.net/files/preview/1280x957/21565851986bbscuwaiidwdnhq8y2ealfi4js8ykwz8zw5jt3o7fdaekwggribblx66oc0joidxdw3gtjo3l69apebps8ulquytobfk6qoslhwx.png' },
       { key:'lion', name:'สิงโต', imageUrl:'https://img.freepik.com/free-photo/3d-animated-cartoon-lion_23-2150800715.jpg' },
@@ -558,7 +563,6 @@
       fish:'sound/fish.mp3', shark:'sound/shark.mp3', octopus:'sound/octopus.mp3',
       butterfly:'sound/butterfly.mp3', ladybeetle:'sound/ladybeetle.mp3', ant:'sound/ant.mp3', bee:'sound/bee.mp3'
     };
-
     function playAnimalSound(keyOrName){
       let key = keyOrName;
       if(!SOUND_URLS[keyOrName]){
@@ -578,28 +582,16 @@
       }
     }
 
-    function showScreen(which){ document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-'+which).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
-
-    // 🎉 ตัวช่วยเพิ่มอิโมจิ
     const EMOJIS = ["🌟","🎉","🎈","🥳","🌈","✨","💫","🎯","🧠","🧩","🐾","🍀","🚀"];
     function addEmojis(text, count=2){
-      const pick = [];
-      for(let i=0;i<count;i++){ pick.push(EMOJIS[Math.floor(Math.random()*EMOJIS.length)]); }
+      const pick = []; for(let i=0;i<count;i++){ pick.push(EMOJIS[Math.floor(Math.random()*EMOJIS.length)]); }
       return `${text} ${pick.join(" ")}`;
     }
-
-    // ✅ helper: ให้กล่อง summary แสดง “ชื่อเกมที่เล่น” เท่านั้น
     function setCertSummary(gameKey){
       const title = GAME_TITLES[gameKey] || '';
       const el = document.getElementById(`certSummary-${gameKey}`);
-      if(el){
-        el.textContent = title;
-      }
+      if(el){ el.textContent = title; }
     }
-
-    /* ============================
-       🐘 เกม: เลือกภาพที่ถูกต้อง
-    ============================ */
     const scrFind = document.getElementById('screen-find');
     const qText = document.getElementById('qText');
     const qIndexEl = document.getElementById('qIndex');
@@ -614,10 +606,8 @@
     const certDate = document.getElementById('certDate');
     const playAgain = document.getElementById('playAgain');
     const qSpeakBtn = document.getElementById('qSpeakBtn');
-
     let bank = []; let quiz = []; let qIdx = 0; let score = 0; let selected = null; let nextTimer = null;
     let currentQuestionText = "…";
-
     function buildBank(){
       bank = ANIMALS.slice(0, 30).map((ani, i) => {
         let other;
@@ -661,7 +651,6 @@
       optionsEl.innerHTML = '';
       selected = null; submitBtn.disabled = true; skipWaitBtn.classList.add('hidden');
       feedback.textContent='';
-
       q.options.forEach((opt, idx) => {
         const card = document.createElement('button');
         card.className = 'option'; card.type = 'button'; card.setAttribute('aria-pressed','false');
@@ -728,7 +717,7 @@
       certName.textContent = name;
       certScore.textContent = `คะแนน: ${score}/10`;
       certDate.textContent = new Date().toLocaleString('th-TH', { dateStyle:'long', timeStyle:'short' });
-      setCertSummary('find');  // ✅ เปลี่ยนเป็นชื่อเกม
+      setCertSummary('find');
       finishBlock.classList.remove('hidden');
       document.getElementById('dlPdf-find').focus();
       logResult('find','เลือกภาพที่ถูกต้อง',score);
@@ -737,8 +726,6 @@
     skipWaitBtn.addEventListener('click', nextQuestion);
     playAgain.addEventListener('click', startFindGame);
     qSpeakBtn.addEventListener('click', ()=> speakThai(currentQuestionText));
-
-    // ========== ดาวน์โหลดใบประกาศ (เกม 1) ==========
     async function captureCertificate(elId){
       const target = document.getElementById(elId);
       const canvas = await html2canvas(target, { scale: 2, backgroundColor:'#ffffff' });
@@ -763,16 +750,12 @@
       pdf.save(`ผลงาน_${name}.pdf`);
     });
 
-    /* ============================
-       🎨 เกม: เลือกสีที่ถูกต้อง (คลิกการ์ด = ตอบทันที)
-    ============================ */
     const COLORS = [
       {name:'สีแดง',hex:'#ef4444'},{name:'สีเขียว',hex:'#22c55e'},{name:'สีน้ำเงิน',hex:'#3b82f6'},{name:'สีเหลือง',hex:'#eab308'},
       {name:'สีม่วง',hex:'#a855f7'},{name:'สีส้ม',hex:'#f97316'},{name:'สีชมพู',hex:'#ec4899'},{name:'สีฟ้า',hex:'#38bdf8'}
     ];
     const qSpeakBtnColor = document.getElementById('qSpeakBtn-color');
     let currentQuestionTextColor = "…";
-
     function startColorGame(){
       showScreen('color');
       const state = { idx:0, score:0, selected:null, quiz:[] , timer:null, locked:false };
@@ -785,23 +768,19 @@
       }
       renderColor(state);
     }
-
     function renderColor(st){
       const q = st.quiz[st.idx];
       st.locked = false;
       currentQuestionTextColor = q.ask;
-
       document.getElementById('qText-color').textContent = addEmojis(q.ask,2);
       document.getElementById('qIndex-color').textContent = st.idx+1;
       document.getElementById('qBar-color').style.width = `${(st.idx)/10*100}%`;
-
       const box = document.getElementById('options-color');
       box.innerHTML='';
       const skip = document.getElementById('skipWaitBtn-color');
       const fb = document.getElementById('feedback-color');
       skip.classList.add('hidden');
       fb.textContent='';
-
       q.options.forEach((opt, idx)=>{
         const card=document.createElement('button');
         card.className='option color'; card.type='button';
@@ -813,49 +792,40 @@
         card.addEventListener('click', ()=>{
           if(st.locked) return;
           st.locked = true;
-
           const correct = idx===q.correctIndex;
           if(correct) st.score++;
-
           [...box.children].forEach((c,i)=>{
             const mark=c.querySelector('.mark');
             if(i===q.correctIndex){ c.classList.add('correct'); mark.title='ถูกต้อง'; }
             else if(i===idx){ c.classList.add('wrong'); mark.textContent='✖'; mark.title='ผิด'; }
           });
-
           fb.textContent = correct ? '✅ เก่งมาก! คำตอบถูกต้อง 🥳' : `❌ ยังไม่ถูกนะ คำตอบคือ “${q.correctName}” 💡`;
           skip.classList.remove('hidden');
-
           clearTimeout(st.timer);
           st.timer = setTimeout(()=>nextColor(st), 5000);
         });
-
         box.appendChild(card);
       });
-
       skip.onclick=()=>{ clearTimeout(st.timer); nextColor(st); };
       qSpeakBtnColor.onclick = ()=> speakThai(currentQuestionTextColor);
       document.getElementById('playAgain-color').onclick=()=> startColorGame();
     }
-
     function nextColor(st){
       st.idx++;
       if(st.idx<10) renderColor(st);
       else finishColor(st);
     }
-
     function finishColor(st){
       document.getElementById('qBar-color').style.width='100%';
       const name = (localStorage.getItem('childName')||'น้องเก่ง');
       document.getElementById('certName-color').textContent=name;
       document.getElementById('certScore-color').textContent=`คะแนน: ${st.score}/10`;
       document.getElementById('certDate-color').textContent=new Date().toLocaleString('th-TH',{dateStyle:'long', timeStyle:'short'});
-      setCertSummary('color'); // ✅ เปลี่ยนเป็นชื่อเกม
+      setCertSummary('color');
       document.getElementById('finishBlock-color').classList.remove('hidden');
       document.getElementById('dlPdf-color').focus();
       logResult('color','เลือกสีที่ถูกต้อง',st.score||0);
     }
-
     document.getElementById('dlJpg-color').addEventListener('click', async ()=>{
       const { dataUrl } = await captureCertificate('certificate-color');
       const a = document.createElement('a'); const name = (localStorage.getItem('childName')||'เด็กดี');
@@ -874,9 +844,6 @@
       pdf.save(`ผลงาน_${name}.pdf`);
     });
 
-    /* ============================
-       ❓ เกม: เลือกคำตอบที่ถูกต้อง (ตามหมวด)
-    ============================ */
     const SETS = {
       water:      ['ปลา','ปลาโลมา','วาฬ','ฉลาม','ปลาหมึก','เต่า','จระเข้','เพนกวิน'],
       plantEater: ['ช้าง','วัว','ม้า','กระต่าย','แพนด้า','โคอาลา','กวาง','ลิง'],
@@ -889,7 +856,6 @@
     };
     const nameToAnimal = Object.fromEntries(ANIMALS.map(a=>[a.name,a]));
     const randItem = arr => arr[Math.floor(Math.random()*arr.length)];
-
     function buildQuizBank(){
       const items = [];
       SETS.water.forEach(n=>{
@@ -925,7 +891,6 @@
         let wrong; do{ wrong=randItem(candidates); }while(SETS.forest.includes(wrong));
         items.push({ ask:'อะไรเอ่ยอยู่ในป่า', correct:n, wrong });
       });
-
       const out = items.map(it=>{
         const correctIndex = Math.random()<0.5?0:1;
         const leftName = correctIndex===0 ? it.correct : it.wrong;
@@ -942,7 +907,6 @@
       });
       return out.sort(()=>Math.random()-0.5).slice(0,10);
     }
-
     const qSpeakBtnQuiz = document.getElementById('qSpeakBtn-quiz');
     let currentQuestionTextQuiz = "…";
 
@@ -954,7 +918,6 @@
       const state = { idx:0, score:0, selected:null, quiz:buildQuizBank(), timer:null };
       renderQuiz(state);
     }
-
     function renderQuiz(st){
       const q = st.quiz[st.idx];
       const qTextEl = document.getElementById('qText-quiz');
@@ -964,69 +927,44 @@
       const submit = document.getElementById('submitBtn-quiz');
       const skip = document.getElementById('skipWaitBtn-quiz');
       const fb = document.getElementById('feedback-quiz');
-
       currentQuestionTextQuiz = q.ask;
       qTextEl.textContent = addEmojis(q.ask,2);
       qIndex.textContent = st.idx+1;
       qBar.style.width = `${(st.idx)/10*100}%`;
       options.innerHTML=''; st.selected=null; submit.disabled=true; skip.classList.add('hidden'); fb.textContent='';
-
       q.options.forEach((opt, idx)=>{
-        const card=document.createElement('button');
-        card.className='option';
-        card.type='button';
-        card.setAttribute('aria-pressed','false');
-
+        const card=document.createElement('button'); card.className='option'; card.type='button'; card.setAttribute('aria-pressed','false');
         card.innerHTML = opt.textOnly
           ? `<div style="display:flex;align-items:center;justify-content:center;min-height:220px;font-size:64px">🅰️</div>
-             <footer>
-               <span class="name">${opt.name}</span>
-               <span class="sound-btn" role="button" tabindex="0" aria-label="ฟังคำว่า ${opt.name}">🔊 ฟังเสียง</span>
-             </footer>
+             <footer><span class="name">${opt.name}</span><span class="sound-btn" role="button" tabindex="0" aria-label="ฟังคำว่า ${opt.name}">🔊 ฟังเสียง</span></footer>
              <div class="mark">✔</div>`
           : `<img class="opt-img" data-key="${opt.key}" src="${opt.img}" alt="${opt.alt}">
-             <footer>
-               <span class="name">${opt.name}</span>
-               <span class="sound-btn" role="button" tabindex="0" aria-label="ฟังเสียงของ ${opt.name}">🔊 ฟังเสียง</span>
-             </footer>
+             <footer><span class="name">${opt.name}</span><span class="sound-btn" role="button" tabindex="0" aria-label="ฟังเสียงของ ${opt.name}">🔊 ฟังเสียง</span></footer>
              <div class="mark">✔</div>`;
-
         card.addEventListener('click',(e)=>{
           if(e.target && e.target.classList.contains('sound-btn')) return;
           [...options.children].forEach(c=>c.classList.remove('selected'));
-          card.classList.add('selected');
-          st.selected=idx;
-          submit.disabled=false;
-          fb.textContent='';
+          card.classList.add('selected'); st.selected=idx; submit.disabled=false; fb.textContent='';
         });
-
         const soundEl = card.querySelector('.sound-btn');
         if(soundEl){
           const playSound = ()=>{ opt.textOnly ? speakThai(opt.name) : playAnimalSound(opt.key); };
           soundEl.addEventListener('click',(e)=>{ e.stopPropagation(); playSound(); });
-          soundEl.addEventListener('keydown',(e)=>{
-            if(e.key==='Enter' || e.key===' '){ e.preventDefault(); e.stopPropagation(); playSound(); }
-          });
+          soundEl.addEventListener('keydown',(e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); e.stopPropagation(); playSound(); } });
         }
-
         if(!opt.textOnly){
           const img = card.querySelector('.opt-img');
           img.addEventListener('click',(e)=>{
             e.stopPropagation();
             [...options.children].forEach(c=>c.classList.remove('selected'));
-            card.classList.add('selected');
-            st.selected=idx;
-            submit.disabled=false;
-            fb.textContent='';
+            card.classList.add('selected'); st.selected=idx; submit.disabled=false; fb.textContent='';
             playAnimalSound(opt.key);
           });
         }else{
           card.addEventListener('dblclick', ()=> speakThai(opt.name));
         }
-
         options.appendChild(card);
       });
-
       submit.onclick=()=>{
         if(st.selected==null) return;
         const correct = st.selected===q.correctIndex;
@@ -1037,42 +975,31 @@
           if(i===q.correctIndex){ c.classList.add('correct'); mark.title='ถูกต้อง'; }
           else if(i===st.selected){ c.classList.add('wrong'); mark.textContent='✖'; mark.title='ผิด'; }
         });
-
         fb.textContent = correct ? '✅ เก่งมาก! คำตอบถูกต้อง 🥳' : `❌ ยังไม่ถูกนะ คำตอบคือ “${q.correctName}” 💡`;
-        submit.disabled=true;
-        skip.classList.remove('hidden');
+        submit.disabled=true; skip.classList.remove('hidden');
 
         clearTimeout(st.timer);
         st.timer = setTimeout(()=>nextQuiz(st), 5000);
       };
-
       skip.onclick=()=>{ clearTimeout(st.timer); nextQuiz(st); };
       document.getElementById('playAgain-quiz').onclick=()=> startQuizGame();
-
       qSpeakBtnQuiz.onclick = ()=> speakThai(currentQuestionTextQuiz);
     }
-
     function nextQuiz(st){
       st.idx++;
-      if(st.idx < 10){
-        renderQuiz(st);
-      }else{
-        finishQuiz(st);
-      }
+      if(st.idx < 10){ renderQuiz(st); } else { finishQuiz(st); }
     }
-
     function finishQuiz(st){
       document.getElementById('qBar-quiz').style.width='100%';
       const name=(localStorage.getItem('childName')||'น้องเก่ง');
       document.getElementById('certName-quiz').textContent=name;
       document.getElementById('certScore-quiz').textContent=`คะแนน: ${st.score}/10`;
       document.getElementById('certDate-quiz').textContent=new Date().toLocaleString('th-TH',{dateStyle:'long', timeStyle:'short'});
-      setCertSummary('quiz'); // ✅ เปลี่ยนเป็นชื่อเกม
+      setCertSummary('quiz');
       document.getElementById('finishBlock-quiz').classList.remove('hidden');
       document.getElementById('dlPdf-quiz').focus();
       logResult('quiz','เลือกคำตอบที่ถูกต้อง',st.score||0);
     }
-
     document.getElementById('dlJpg-quiz').addEventListener('click', async ()=>{
       const { dataUrl } = await captureCertificate('certificate-quiz');
       const a = document.createElement('a'); const name = (localStorage.getItem('childName')||'เด็กดี');
@@ -1090,9 +1017,6 @@
       const name = (localStorage.getItem('childName')||'เด็กดี'); pdf.save(`ผลงาน_${name}.pdf`);
     });
 
-    /* ============================
-       🚗 เกม: ชีวิตประจำวัน
-    ============================ */
     const LIFE_BANK = [
       {ask:'อะไรเอ่ยไว้สำหรับขีดเขียน?', correct:'สมุด', wrong:'โทรศัพท์'},
       {ask:'อะไรเอ่ยไว้สำหรับอ่านหาความรู้', correct:'หนังสือ', wrong:'ดินสอ'},
@@ -1136,9 +1060,8 @@
       {ask:'อะไรเอ่ยแล่นอยู่บนทะเล สามารถขนของไปต่างประเทศได้?', correct:'เรือ', wrong:'เครื่องบิน'},
       {ask:'อะไรเอ่ยบินบนท้องฟ้า พาเราไปต่างประเทศ?', correct:'เครื่องบิน', wrong:'เรือ'},
       {ask:'อะไรเอ่ยบินได้ มีใบพัดหมุนอยู่ข้างบน?', correct:'เฮลิคอปเตอร์', wrong:'เครื่องบิน'},
-      {ask:'อะไรเอ่ยวิ่งอยู่บนถนน คอยรับส่งนักเรียน', correct:'รถบัส', wrong:'จักรยาน'},
+      {ask:'อะไรเอ่ยวิ่งอยู่บนถนน คอยรับส่งนักเรียน', correct:'รถบัส', wrong:'จักรยาน'}
     ];
-
     const LIFE_ASSETS = {
       'สมุด': 'https://img.freepik.com/premium-vector/hand-drawn-book-cartoon-illustration-isolated-white-background_921039-24019.jpg',
       'หนังสือ': 'https://img.pikbest.com/png-images/qianku/cartoon-white-book-information-free-button_2049323.png!sw800',
@@ -1158,9 +1081,7 @@
       'ร่ม': 'https://img.freepik.com/premium-vector/umbrella-cartoon-vector-illustration-white-background_1293239-12526.jpg',
       'ไฟฉาย': 'https://i.pinimg.com/474x/d8/cd/f4/d8cdf44e6416d35128ef1d2ff39723b7.jpg',
       'กรรไกร': 'https://i.pinimg.com/736x/8b/55/1c/8b551c86ac4604035fb40c761872b820.jpg',
-      'แก้วน้ำ': 'https://media.istockphoto.com/id/524535335/th/%E0%B9%80%E0%B8%A7%E0%B8%84%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/%E0%B9%81%E0%B8%81%E0%B9%89%E0%B8%A7%E0%B8%99%E0%B9%89%E0%B9%8D%E0%B8%B2%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%95%E0%B8%B9%E0%B8%99.jpg?s=612x612&w=0&k=20&c=a3WdRqHeGLrN5iGGg43Sm25XmZThQktl13WEzH4jwj8=',
-
-      /* ประเภทอาชีพ */
+      'แก้วน้ำ': 'https://media.istockphoto.com/id/524535335/th/%E0%B8%A7%E0%B8%B4%E0%B8%84%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/%E0%B9%81%E0%B8%81%E0%B9%89%E0%B8%A7%E0%B8%99%E0%B9%89%E0%B9%8D%E0%B8%B2%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%95%E0%B8%B9%E0%B8%99.jpg?s=612x612&w=0&k=20&c=a3WdRqHeGLrN5iGGg43Sm25XmZThQktl13WEzH4jwj8=',
       'ตำรวจ': 'https://img.freepik.com/premium-photo/police-officer-2d-cartoon-illustraton-white-background_889056-38212.jpg',
       'ทหาร': 'https://img.freepik.com/premium-photo/army-action-cartoon-soldier-white-background_41969-39116.jpg',
       'หมอ': 'https://img.freepik.com/premium-vector/cute-girl-doctor-cartoon-white-background-cute-female-doctor-character-illustration_1249867-5074.jpg',
@@ -1168,8 +1089,6 @@
       'ครู': 'https://img.freepik.com/premium-photo/funny-3d-teacher-character-with-blackboard-white-background_407474-27666.jpg',
       'ชาวนา': 'https://img.freepik.com/premium-vector/farmer-cartoon-character-white-background_1639-29226.jpg',
       'ช่างก่อสร้าง': 'https://www.shutterstock.com/image-vector/classic-worker-carpenter-vector-civil-600nw-2485309197.jpg',
-
-      /* ประเภทอาหาร */
       'เค้ก': 'https://i.pinimg.com/1200x/03/c8/5a/03c85a7041cbb5a96b6d0c88cb41f347.jpg',
       'อมยิ้ม': 'https://img.freepik.com/premium-vector/cute-kawaiistyle-lollipop-candy-illustration-with-stars-happy-face-sweet-designs_1465813-1.jpg',
       'ข้าว': 'https://img.freepik.com/premium-vector/cute-rice-cartoon-rice-bowl-white-background-vector_1322206-12491.jpg',
@@ -1181,32 +1100,22 @@
       'ไก่ทอด': 'https://img.pikbest.com/png-images/qiantu/hand-drawn-gourmet-delicious-fried-chicken-drumstick-cartoon-elements_2737998.png!sw800',
       'ขนมปัง': 'https://img.freepik.com/premium-vector/sandwich-cartoon-character-clipart-vector-illustration_1280610-1176.jpg',
       'เฟรนฟราย': 'https://st2.depositphotos.com/1354412/8885/v/450/depositphotos_88855744-stock-illustration-french-fries-cartoon-character.jpg',
-
-      /* ประเภทยานพาหนะ */
       'รถจักรยานยนต์': 'https://img.freepik.com/premium-photo/sport-racing-motorbike-cartoon-icon-illustration_1240525-72697.jpg?w=360',
       'รถยนต์': 'https://img.freepik.com/premium-vector/cute-cartoon-car-illustration-isolated-white-background_1174662-3882.jpg',
-      'จักรยาน': 'https://media.istockphoto.com/id/852005136/th/%E0%B9%80%E0%B8%A7%E0%B8%84%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%95%E0%B8%B9%E0%B8%99%E0%B8%88%E0%B8%B1%E0%B8%81%E0%B8%A3%E0%B8%A2%E0%B8%B2%E0%B8%99.jpg?s=170667a&w=0&k=20&c=gMhycXnsAAz1WWZeGHvIZTIHjdle7MmUx2NUg3Hf7VI=',
+      'จักรยาน': 'https://img.freepik.com/premium-vector/cute-bicycle-cartoon-white-background_1308-137385.jpg',
       'เรือ': 'https://img.freepik.com/premium-vector/sailboat-cartoon-sticker-clip-art-vector-design-with-white-background_579306-13693.jpg',
       'เครื่องบิน': 'https://i.pinimg.com/1200x/1e/7c/dd/1e7cdd9df0fef8fd78be0b33aa7d50fc.jpg',
       'เฮลิคอปเตอร์': 'https://img.freepik.com/premium-photo/cartoon-military-helicopter-white-background_308643-1212.jpg',
       'รถบัส': 'https://i.pinimg.com/736x/25/13/dc/2513dcce7c76fa38fb89b9403511b7d0.jpg',
       'รถตู้': 'https://img.freepik.com/premium-vector/isolated-cartoon-van-vehicle-illustration-transportation-themes_1263357-23999.jpg'
     };
-
     function lifeOptionToObj(name){
-      if(nameToAnimal[name]){
-        const an = nameToAnimal[name];
-        return { name, key: an.key, img: an.imageUrl, alt: `รูป${name}` };
-      }
-      if(LIFE_ASSETS[name]){
-        return { name, img: LIFE_ASSETS[name], alt:`รูป${name}` };
-      }
+      if(nameToAnimal[name]){ const an = nameToAnimal[name]; return { name, key: an.key, img: an.imageUrl, alt: `รูป${name}` }; }
+      if(LIFE_ASSETS[name]){ return { name, img: LIFE_ASSETS[name], alt:`รูป${name}` }; }
       return { name, textOnly:true };
     }
-
     const qSpeakBtnLife = document.getElementById('qSpeakBtn-life');
     let currentQuestionTextLife = "…";
-
     function startLifeGame(){
       showScreen('life');
       const shuffled=[...LIFE_BANK].sort(()=>Math.random()-0.5).slice(0,10);
@@ -1216,18 +1125,12 @@
           const correctIndex=Math.random()<0.5?0:1;
           const leftName  = correctIndex ? q.wrong : q.correct;
           const rightName = correctIndex ? q.correct : q.wrong;
-          return {
-            ask:q.ask,
-            correctIndex,
-            options:[ lifeOptionToObj(leftName), lifeOptionToObj(rightName) ],
-            correctName:q.correct
-          };
+          return { ask:q.ask, correctIndex, options:[ lifeOptionToObj(leftName), lifeOptionToObj(rightName) ], correctName:q.correct };
         }),
         timer:null
       };
       renderLife(state);
     }
-
     function renderLife(st){
       const q = st.quiz[st.idx];
       const qTextEl = document.getElementById('qText-life');
@@ -1237,40 +1140,27 @@
       const submit = document.getElementById('submitBtn-life');
       const skip = document.getElementById('skipWaitBtn-life');
       const fb = document.getElementById('feedback-life');
-
       currentQuestionTextLife = q.ask;
       qTextEl.textContent = addEmojis(q.ask,2);
       qIndex.textContent = st.idx+1;
       qBar.style.width = `${(st.idx)/10*100}%`;
       options.innerHTML=''; st.selected=null; submit.disabled=true; skip.classList.add('hidden'); fb.textContent='';
-
       q.options.forEach((opt, idx)=>{
-        const card=document.createElement('button');
-        card.className='option'; card.type='button';
-
+        const card=document.createElement('button'); card.className='option'; card.type='button';
         card.innerHTML = opt.textOnly
-          ? `
-            <div style="display:flex;align-items:center;justify-content:center;min-height:220px;font-size:64px">🅰️</div>
-            <footer><span class="name">${opt.name}</span></footer>
-            <div class="mark">✔</div>
-          `
-          : `
-            <img class="opt-img" ${opt.key?`data-key="${opt.key}"`:''} src="${opt.img}" alt="${opt.alt}">
-            <footer>
-              <span class="name">${opt.name}</span>
-              ${opt.key ? `<button class="sound-btn" type="button" aria-label="ฟังเสียงของ ${opt.name}">🔊 ฟังเสียง</button>` : ''}
-            </footer>
-            <div class="mark">✔</div>
-          `;
-
+          ? `<div style="display:flex;align-items:center;justify-content:center;min-height:220px;font-size:64px">🅰️</div>
+             <footer><span class="name">${opt.name}</span></footer>
+             <div class="mark">✔</div>`
+          : `<img class="opt-img" ${opt.key?`data-key="${opt.key}"`:''} src="${opt.img}" alt="${opt.alt}">
+             <footer><span class="name">${opt.name}</span>${opt.key ? `<button class="sound-btn" type="button" aria-label="ฟังเสียงของ ${opt.name}">🔊 ฟังเสียง</button>` : ''}</footer>
+             <div class="mark">✔</div>`;
         card.addEventListener('click', (e)=>{
           if(e.target && e.target.classList.contains('sound-btn')) return;
           [...options.children].forEach(c=>c.classList.remove('selected'));
           card.classList.add('selected'); st.selected=idx; submit.disabled=false; fb.textContent='';
-          // ให้มีเสียงอ่านชื่อสิ่งของเวลาคลิก
-          if(opt.key) playAnimalSound(opt.key); else speakThai(opt.name);
+          if(opt.key) playAnimalSound(opt.key);
+                    if(opt.key) playAnimalSound(opt.key); else speakThai(opt.name);
         });
-
         const imgEl = card.querySelector('.opt-img');
         if(imgEl){
           imgEl.addEventListener('click',(e)=>{
@@ -1284,52 +1174,42 @@
         if(sbtn){
           sbtn.addEventListener('click',(e)=>{ e.stopPropagation(); playAnimalSound(opt.key); });
         }
-
         options.appendChild(card);
       });
-
       submit.onclick=()=>{
         if(st.selected==null) return;
         const correct = st.selected===q.correctIndex;
         if(correct) st.score++;
-
         [...options.children].forEach((c,i)=>{
           const mark=c.querySelector('.mark');
           if(i===q.correctIndex){ c.classList.add('correct'); mark.title='ถูกต้อง'; }
           else if(i===st.selected){ c.classList.add('wrong'); mark.textContent='✖'; mark.title='ผิด'; }
         });
-
         fb.textContent = correct ? '✅ เก่งมาก! คำตอบถูกต้อง 🥳' : `❌ ยังไม่ถูกนะ คำตอบคือ “${q.correctName}” 💡`;
         submit.disabled=true; skip.classList.remove('hidden');
-
         clearTimeout(st.timer);
         st.timer=setTimeout(()=>nextLife(st),5000);
       };
-
       skip.onclick=()=>{ clearTimeout(st.timer); nextLife(st); };
       document.getElementById('playAgain-life').onclick=()=> startLifeGame();
       qSpeakBtnLife.onclick = ()=> speakThai(currentQuestionTextLife);
     }
-
     function nextLife(st){
       st.idx++;
       if(st.idx<10) renderLife(st);
       else finishLife(st);
     }
-
     function finishLife(st){
       document.getElementById('qBar-life').style.width='100%';
       const name=(localStorage.getItem('childName')||'น้องเก่ง');
       document.getElementById('certName-life').textContent=name;
       document.getElementById('certScore-life').textContent=`คะแนน: ${st.score}/10`;
       document.getElementById('certDate-life').textContent=new Date().toLocaleString('th-TH',{dateStyle:'long', timeStyle:'short'});
-      setCertSummary('life');   /* ✅ ให้แสดงชื่อเกมที่เล่น */
+      setCertSummary('life');
       document.getElementById('finishBlock-life').classList.remove('hidden');
       document.getElementById('dlPdf-life').focus();
       logResult('life','ชีวิตประจำวัน',st.score||0);
     }
-
-    // ========== ดาวน์โหลดใบประกาศ (เกม ชีวิตประจำวัน) ==========
     document.getElementById('dlJpg-life').addEventListener('click', async ()=>{
       const { dataUrl } = await captureCertificate('certificate-life');
       const a = document.createElement('a');
@@ -1340,7 +1220,6 @@
       a.click();
       a.remove();
     });
-
     document.getElementById('dlPdf-life').addEventListener('click', async ()=>{
       const { jsPDF } = window.jspdf;
       const { canvas } = await captureCertificate('certificate-life');
@@ -1354,17 +1233,12 @@
       pdf.save(`ผลงาน_${name}.pdf`);
     });
 
-    // ==============================
-    // 💾 จัดการ “ชื่อเด็ก”
-    // ==============================
     const nameInput = document.getElementById('childName');
     const saveNameBtn = document.getElementById('saveNameBtn');
-
     (function preloadName(){
       const saved = localStorage.getItem('childName') || '';
       if(saved){ nameInput.value = saved; }
     })();
-
     saveNameBtn.addEventListener('click', ()=>{
       const v = (nameInput.value || '').trim();
       if(!v){ alert('พิมพ์ชื่อก่อนนะครับ 😊'); return; }
@@ -1373,13 +1247,180 @@
       saveNameBtn.textContent = 'บันทึกแล้ว ✅';
       setTimeout(()=> saveNameBtn.textContent='บันทึก', 1200);
     });
-
     nameInput.addEventListener('keydown', (e)=>{
       if(e.key==='Enter'){ saveNameBtn.click(); }
     });
 
-    // เปิดหน้าแรกเป็นค่าเริ่มต้น
     document.addEventListener('DOMContentLoaded', ()=> { showScreen('home'); });
+    async function fetchStats(){
+    try{
+      const res = await fetch(APPS_SCRIPT_URL + '?action=stats', { cache:'no-store' });
+      const data = await res.json();
+      if(!data.ok) throw new Error(data.error || 'fetch stats failed');
+      // data = { ok, perGameCounts, perGameScores, sheetUrl, sheetId }
+    return {
+      rows: null,                // ไม่จำเป็นแล้ว
+      headers: [],
+      perGameCounts: data.perGameCounts || {},
+      perGameScores: data.perGameScores || {},
+      sheetUrl: data.sheetUrl || null
+    };
+    }catch(err){
+      console.warn('fetchStats() failed:', err);
+      return { rows:null, headers:[], perGameCounts:{}, perGameScores:{} };
+    }
+    }
+    function aggregateRows(rows){
+      const perGameCounts = {};
+      const perGameScores = {};
+      for(const g of games.map(g=>g.id)){ perGameCounts[g]=0; perGameScores[g]=Array(10).fill(0); }
+      rows.forEach(r=>{
+        const g = r.gameId;
+        if(!perGameCounts[g]){ perGameCounts[g]=0; perGameScores[g]=Array(10).fill(0); }
+        perGameCounts[g] += 1;
+        const sc = Math.max(1, Math.min(10, Number(r.score)||0));
+        perGameScores[g][sc-1] += 1;
+      });
+      return { perGameCounts, perGameScores };
+    }
+    let pieChart;
+    function renderPie(perGameCounts){
+      const labels = Object.keys(perGameCounts)
+        .filter(k=>perGameCounts[k]>0)
+        .map(k=> GAME_TITLES[k] || k);
+      const data   = Object.keys(perGameCounts).filter(k=>perGameCounts[k]>0).map(k=>perGameCounts[k]);
+      const total  = data.reduce((a,b)=>a+b,0);
+      const caption = document.getElementById('pieCaption');
+      caption.textContent = `รวมผู้เล่นทั้งหมด ${total.toLocaleString('th-TH')} คน`;
+      const ctx = document.getElementById('pieChart').getContext('2d');
+      if(pieChart) pieChart.destroy();
+      pieChart = new Chart(ctx, {
+        type:'pie',
+        data:{ labels, datasets:[{ data }]},
+        options:{
+          responsive:true,
+          plugins:{
+            legend:{ position:'bottom', labels:{ boxWidth:18 } },
+            tooltip:{ callbacks:{
+              label:(c)=>{
+                const v = c.parsed; const p = total? Math.round(v*1000/total)/10 : 0;
+                return `${c.label} — ${v.toLocaleString('th-TH')} คน (${p}%)`;
+              }
+            }}
+          }
+        }
+      });
+
+      const right = document.getElementById('pieRightText');
+      const lines = [];
+      lines.push(`เกมทั้งหมดมีผู้เล่นรวม <b>${total.toLocaleString('th-TH')}</b> คน`);
+      Object.keys(perGameCounts).forEach(k=>{
+        const name = GAME_TITLES[k] || k;
+        const v = perGameCounts[k]||0;
+        lines.push(`เกม <b>${name}</b> มีเด็กเข้าเล่นจำนวน <b> ${v.toLocaleString('th-TH')}</b> จากจำนวน ${total.toLocaleString('th-TH')} คน`);
+      });
+      right.innerHTML = lines.map(l=>`<div style="margin:6px 0">${l}</div>`).join('');
+    }
+
+    let barChart;
+    function renderBarFor(gameId, perGameScores){
+      const src = perGameScores[gameId] || {};
+      const counts = Array.from({length:10}, (_,i)=>{
+      const k = String(i+1);
+      return Array.isArray(src) ? Number(src[i] || 0) : Number(src[k] || 0);
+    });
+
+    const labels = Array.from({length:10},(_,i)=> (i+1).toString());
+    const ctx = document.getElementById('barChart').getContext('2d');
+    if(barChart) barChart.destroy();
+    barChart = new Chart(ctx, {
+      type:'bar',
+      data:{ labels, datasets:[{ data: counts }]},
+      options:{
+        responsive:true,
+        scales:{
+          x:{ title:{ display:true, text:'คะแนน' } },
+          y:{ beginAtZero:true, title:{ display:true, text:'จำนวนคน' } }
+        },
+        plugins:{
+          legend:{ display:false },
+          tooltip:{ callbacks:{
+          label:(c)=> `คะแนน ${c.label} — ${c.parsed.y.toLocaleString('th-TH')} คน`
+          }}
+        }
+      }
+    });
+
+  const TOK = counts.reduce((a,b)=>a+b,0);
+  let ETidx = 0, RTidx = 0, maxV = -1, minV = Number.POSITIVE_INFINITY;
+  counts.forEach((v,i)=>{ if(v>maxV){maxV=v; ETidx=i;} if(v<minV){minV=v; RTidx=i;} });
+  const ET = ETidx+1, RT = RTidx+1;
+
+  const name = GAME_TITLES[gameId] || gameId;
+  const right = document.getElementById('barRightText');
+  const rows = [];
+  rows.push(`<div style="font-size:22px; font-weight:800; margin:6px 0 10px">จำนวนคนเล่นเกม ${name}) มีทั้งหมด <b>${TOK.toLocaleString('th-TH')}</b> คน</div>`);
+  rows.push(`<div style="font-size:18px; margin:4px 0">ได้มากที่สุดคือ (<b>${ET}</b>)</div>`);
+  rows.push(`<div style="font-size:18px; margin:4px 0">ได้น้อยที่สุดคือ (<b>${RT}</b>)</div>`);
+  rows.push(`<div style="font-size:18px; margin:8px 0 6px">สรุปจำนวนคนได้คะแนน</div>`);
+  for(let sc=10; sc>=1; sc--){
+    const v = counts[sc-1]||0;
+    rows.push(`<div style="margin:2px 0"> <b>${sc}</b> คะแนน จำนวน <b>${v.toLocaleString('th-TH')}</b> คน</div>`);
+  }
+  right.innerHTML = rows.join('');
+}
+
+    function buildTabs(perGameScores){
+      const box = document.getElementById('gameTabs');
+      box.innerHTML='';
+
+      const order = games.map(g=>g.id).filter(id=>{
+        const src = perGameScores[id];
+        if(!src) return false;
+        if(Array.isArray(src)) return src.some(n=>Number(n||0)>0);
+        return Object.values(src).some(n=>Number(n||0)>0);
+      });
+
+      order.forEach((id,idx)=>{
+        const b = document.createElement('button');
+        b.className = 'tab' + (idx===0?' active':'');
+        b.textContent = GAME_TITLES[id] || id;
+        b.dataset.game = id;
+        b.addEventListener('click',()=>{
+          [...box.children].forEach(x=>x.classList.remove('active'));
+          b.classList.add('active');
+          renderBarFor(id, perGameScores);
+        });
+        box.appendChild(b);
+      });
+
+      if(order.length) renderBarFor(order[0], perGameScores);
+      else {
+        const ctx = document.getElementById('barChart').getContext('2d');
+        if(barChart) { barChart.destroy(); barChart = null; }
+        document.getElementById('barRightText').innerHTML = '<div class="muted">ยังไม่มีข้อมูลคะแนนสำหรับกราฟแท่ง</div>';
+      }
+    }
+
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting) e.target.classList.add('show');
+        else e.target.classList.remove('show');
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+    (async ()=>{
+      const raw = await fetchStats();
+      let perGameCounts = raw.perGameCounts;
+      let perGameScores = raw.perGameScores;
+
+      if(raw.rows){ const agg = aggregateRows(raw.rows); perGameCounts = agg.perGameCounts; perGameScores = agg.perGameScores; }
+
+      renderPie(perGameCounts);
+      buildTabs(perGameScores);
+    })();
   </script>
 </body>
 </html>
