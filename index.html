@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Game Kids HappyLand puatc✨🎈</title>
+  <title>kid game online puatc✨🎈</title>
   <meta name="description" content="เว็บเล่นเกมสำหรับเด็กอนุบาล: ภาพใหญ่ กดง่าย สีสบายตา พร้อมบันทึกผลงานเป็น PDF/JPG" />
   <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -166,6 +166,49 @@
     .tabbar .tab.active{ background:var(--brand); color:#fff }
     .reveal{ opacity:0; transform:translateY(24px); transition: all .7s ease; }
     .reveal.show{ opacity:1; transform:none; }
+
+    body{ padding-bottom: clamp(56px, 6vh, 78px); }
+    #madeByBar{
+      position: fixed; left:0; right:0; bottom:0; z-index:60;
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.95));
+      border-top: 1px solid #e5e7eb; backdrop-filter: blur(6px);
+      box-shadow: 0 -8px 18px rgba(0,0,0,.06);
+    }
+    .madeby-wrap{ height:54px; display:flex; align-items:center; overflow:hidden; }
+    .madeby-track{
+      white-space: nowrap; will-change: transform;
+      animation: marquee-run 18s linear infinite;
+      font-weight: 800; color: var(--soft-ink);
+    }
+    .madeby-track:hover{ animation-play-state: paused; cursor: default; }
+    .madeby-bullet{ margin: 0 .9rem; opacity:.65 }
+
+    @keyframes marquee-run{
+      0%   { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    #homeEmojiLayer{
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    }
+    .home-emoji{
+      position: absolute; font-size: clamp(20px, 2.4vw, 34px);
+      opacity: .25; filter: drop-shadow(0 3px 6px rgba(0,0,0,.12));
+      animation: float-wiggle var(--wiggleDur,5s) ease-in-out infinite;
+      mix-blend-mode: normal;
+    }
+    @keyframes float-wiggle{
+      0%   { transform: translate(0,0) rotate(0deg); }
+      25%  { transform: translate(10px,-10px) rotate(-4deg); }
+      50%  { transform: translate(0,-4px) rotate(0deg); }
+      75%  { transform: translate(-10px,-10px) rotate(4deg); }
+      100% { transform: translate(0,0) rotate(0deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .madeby-track, .home-emoji{ animation: none !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -173,7 +216,7 @@
     <div class="container topbar">
       <div class="brand">
         <img class="logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3wohI4eredJb2xRKso_61n5c00o733XwKMA&s" alt="โลโก้">
-        <h1>Game Kids HappyLand puatc</h1>
+        <h1>วิทยาลัยเทคนิคปัว Kids Game Play</h1>
       </div>
       <div class="child-name" aria-label="ตั้งชื่อนักเรียน">
         <span>👶 ชื่อเด็ก:</span>
@@ -188,6 +231,7 @@
 
   <main class="container">
     <section id="screen-home" class="screen active" aria-label="หน้าเลือกเกม">
+      <div id="homeEmojiLayer" aria-hidden="true"></div>
       <h2 class="emoji-title" style="margin:10px 0 14px">เลือกเกมที่อยากเล่น</h2>
       <div class="games-grid" id="gamesGrid"></div>
       <p class="muted" style="margin-top:10px">เลือกเล่นเกมได้เต็มที่เลยครับ!!! 🎮💥</p>
@@ -485,7 +529,45 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-'+which).classList.add('active');
     setAnalyticsVisible(which === 'home');
-  window.scrollTo({top:0,behavior:'smooth'});
+    window.scrollTo({top:0,behavior:'smooth'});
+      const HOME_EMOJIS = ["🌟","🎈","🎉","✨","🎯","🧩","🧠","🌈","🐾","🚀","🍀","💫"];
+      const homeEmojiLayer = document.getElementById('homeEmojiLayer');
+      function createHomeEmojis(n = 12){
+        homeEmojiLayer.innerHTML = "";
+        const pad = 6;
+        for(let i=0; i<n; i++){
+          const span = document.createElement('span');
+          span.className = 'home-emoji';
+          span.textContent = HOME_EMOJIS[Math.floor(Math.random()*HOME_EMOJIS.length)];
+          const top = pad + Math.random()*(100 - pad*2);
+          const left = pad + Math.random()*(100 - pad*2);
+          const dur = (3 + Math.random()*3).toFixed(2) + 's';
+          const delay = (Math.random()*2).toFixed(2) + 's';
+
+          span.style.top = top + '%';
+          span.style.left = left + '%';
+          span.style.setProperty('--wiggleDur', dur);
+          span.style.animationDelay = delay;
+
+          homeEmojiLayer.appendChild(span);
+        }
+      }
+      function setHomeEmojiVisible(visible){
+        homeEmojiLayer.style.display = visible ? 'block' : 'none';
+      }
+      createHomeEmojis(14);
+      setHomeEmojiVisible(true);
+      const _showScreenOrig = showScreen;
+      showScreen = function(which){
+        _showScreenOrig(which);
+        const onHome = (which === 'home');
+        setHomeEmojiVisible(onHome);
+        if(onHome) createHomeEmojis(14);
+      };
+      document.getElementById('gamesGrid').style.position = 'relative';
+      document.getElementById('gamesGrid').style.zIndex = '1';
+
+    
 }
 setAnalyticsVisible(true);
     function openGame(id){
@@ -847,10 +929,10 @@ setAnalyticsVisible(true);
     const SETS = {
       water:      ['ปลา','ปลาโลมา','วาฬ','ฉลาม','ปลาหมึก','เต่า','จระเข้','เพนกวิน'],
       plantEater: ['ช้าง','วัว','ม้า','กระต่าย','แพนด้า','โคอาลา','กวาง','ลิง'],
-      meatEater:  ['สิงโต','เสือ','งู','จระเข้','หมี','แรด','ฉลาม','นกอินทรี','นกฮูก','สุนัขจิ้งจอก'],
+      meatEater:  ['สิงโต','เสือ','งู','จระเข้','หมี','ฉลาม','นกอินทรี','นกฮูก','สุนัขจิ้งจอก'],
       air:        ['นก','นกฮูก','นกอินทรี','ผีเสื้อ','ผึ้ง'],
       land:       ['สุนัข','แมว','ลิง','กิ้งก่า','หมูป่า','แพนด้า','โคอาลา','สุนัขจิ้งจอก','แรด','หมี'],
-      scary:      ['สิงโต','เสือ','งู','จระเข้','หมี','แรด','ฉลาม','ผึ้ง'],
+      scary:      ['สิงโต','เสือ','งู','จระเข้','หมี','แรด','ฉลาม',],
       domestic:   ['แมว','สุนัข'],
       forest:     ['หมี','เสือ','ลิง','ช้าง','กวาง','หมูป่า','สุนัขจิ้งจอก','นกฮูก','แพนด้า','โคอาลา']
     };
@@ -1257,9 +1339,9 @@ setAnalyticsVisible(true);
       const res = await fetch(APPS_SCRIPT_URL + '?action=stats', { cache:'no-store' });
       const data = await res.json();
       if(!data.ok) throw new Error(data.error || 'fetch stats failed');
-      // data = { ok, perGameCounts, perGameScores, sheetUrl, sheetId }
+      
     return {
-      rows: null,                // ไม่จำเป็นแล้ว
+      rows: null,                
       headers: [],
       perGameCounts: data.perGameCounts || {},
       perGameScores: data.perGameScores || {},
@@ -1360,8 +1442,8 @@ setAnalyticsVisible(true);
   const right = document.getElementById('barRightText');
   const rows = [];
   rows.push(`<div style="font-size:22px; font-weight:800; margin:6px 0 10px">จำนวนคนเล่นเกม ${name} มีทั้งหมด <b>${TOK.toLocaleString('th-TH')}</b> คน</div>`);
-  rows.push(`<div style="font-size:18px; margin:4px 0">ได้มากที่สุดคือ <b>${ET}</b></div>`);
-  rows.push(`<div style="font-size:18px; margin:4px 0">ได้น้อยที่สุดคือ <b>${RT}</b></div>`);
+  rows.push(`<div style="font-size:18px; margin:4px 0">ได้มากที่สุดคือ (<b>${ET}</b>)</div>`);
+  rows.push(`<div style="font-size:18px; margin:4px 0">ได้น้อยที่สุดคือ (<b>${RT}</b>)</div>`);
   rows.push(`<div style="font-size:18px; margin:8px 0 6px">สรุปจำนวนคนได้คะแนน</div>`);
   for(let sc=10; sc>=1; sc--){
     const v = counts[sc-1]||0;
@@ -1422,5 +1504,19 @@ setAnalyticsVisible(true);
       buildTabs(perGameScores);
     })();
   </script>
+  <footer id="madeByBar" aria-label="ผู้จัดทำ">
+  <div class="container madeby-wrap">
+    <div class="madeby-track" role="marquee" aria-live="polite">
+      ผู้จัดทำ : นายกิตติภพ ปุ่นวัฒน์ และ นายพิชญคำชั่ง
+      <span class="madeby-bullet">•</span>
+      ครูที่ปรึกษา : นายวีรพงษ์ อุ่มมี
+      <span class="madeby-bullet">•</span>
+      ขอขอบคุณผู้ทดลองใช้ : เด็กๆ ผู้ปกครอง และคุณครู รวมไปถึงผู้คนทางบ้าน
+      <span class="madeby-bullet">•</span>
+      ติดต่อเราได้ที่ : kittiphop.pun@puatc.ac.th
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
