@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>kid game online puatc✨🎈</title>
+  <title>Game Kids HappyLand puatc✨🎈</title>
   <meta name="description" content="เว็บเล่นเกมสำหรับเด็กอนุบาล: ภาพใหญ่ กดง่าย สีสบายตา พร้อมบันทึกผลงานเป็น PDF/JPG" />
   <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -1359,9 +1359,9 @@ setAnalyticsVisible(true);
   const name = GAME_TITLES[gameId] || gameId;
   const right = document.getElementById('barRightText');
   const rows = [];
-  rows.push(`<div style="font-size:22px; font-weight:800; margin:6px 0 10px">จำนวนคนเล่นเกม ${name}) มีทั้งหมด <b>${TOK.toLocaleString('th-TH')}</b> คน</div>`);
-  rows.push(`<div style="font-size:18px; margin:4px 0">ได้มากที่สุดคือ (<b>${ET}</b>)</div>`);
-  rows.push(`<div style="font-size:18px; margin:4px 0">ได้น้อยที่สุดคือ (<b>${RT}</b>)</div>`);
+  rows.push(`<div style="font-size:22px; font-weight:800; margin:6px 0 10px">จำนวนคนเล่นเกม ${name} มีทั้งหมด <b>${TOK.toLocaleString('th-TH')}</b> คน</div>`);
+  rows.push(`<div style="font-size:18px; margin:4px 0">ได้มากที่สุดคือ <b>${ET}</b></div>`);
+  rows.push(`<div style="font-size:18px; margin:4px 0">ได้น้อยที่สุดคือ <b>${RT}</b></div>`);
   rows.push(`<div style="font-size:18px; margin:8px 0 6px">สรุปจำนวนคนได้คะแนน</div>`);
   for(let sc=10; sc>=1; sc--){
     const v = counts[sc-1]||0;
